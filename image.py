@@ -71,7 +71,7 @@ def main():
 
     if not args.polarisation:
         stokes = ["I"]
-    else args.polarisation:
+    else:
         if specmode == "cube":
             stokes = ["I", "Q", "U", "V"]
         else:
