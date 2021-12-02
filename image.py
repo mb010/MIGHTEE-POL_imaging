@@ -88,9 +88,10 @@ def main():
         os.makedirs(TMP_DIR, exist_ok=True)
         LOCAL_PATH = os.getcwd()
         os.chdir(TMP_DIR)
+        logger.info(str(args.vis.split('/')))
         LOCAL_COPY = f"{tmp_dir}{args.vis.split('/')[-1]}"
         shutil.copytree(vis, LOCAL_COPY)
-        vis = LOCAL_COPY
+        vis = LOCAL_COPYt
     else:
         logger.warn(f"Not copying over files. This can cause a memory lock when multiple tasks are trying to access the same visibility set.")
 
