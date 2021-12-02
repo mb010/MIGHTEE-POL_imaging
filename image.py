@@ -48,14 +48,15 @@ def parse_args(THIS_PROG):
 def main():
     #--------------------------- edit these parameters -------------------------
     threshold   = '0.04mJy'
-    imsize      = 6144
+    imsize      = [6144, 6144]
     wprojplanes = 768
-    datacolumn  = 'data'
+    datacolumn  = 'data' # Not 'corrected'?
     gridder     = 'wproject'
     cell        = '1.5arcsec'
     pol         = 'IQUV'
     uvrange     = '>0.25klambda'
-
+    phasecenter = ""
+    reffreq     = ""
 
     #------------------------------- running clean -----------------------------
     args = parse_args()
@@ -80,51 +81,52 @@ def main():
     # Scales: Approximate width of largest scale object easily seen is ~2arcmin
     scales = [] if deconvolver=="mtfs" else [0, 3, 10 , 30, 80, 120]
 
-    # Name of output image
-    imagename = f"{args.outpath}{args.vis.split('/')[-1]}_{specmode}_{stokes}_{str(briggs_weighting)}_{str(imsize[0])}"
-    if os.path.exists(imagename) and not args.force:
-        logger.error(f"An image already exists under this name, use --force to overwrite (received output path: {imagename}).")
-
     # Copy visibility to scratch disk if requested
     vis = args.vis
     if copy:
-        local_copy = f"/state/partition1/tmp_mbowles/{args.vis.split('/')[-1]}"
-        shutil.copytree(vis, local_copy)
-        vis = local_copy
+        TMP_DIR  = "/state/partition1/tmp_bowles/"
+        os.makedirs(TMP_DIR, exist_ok=True)
+        LOCAL_PATH = os.getcwd()
+        os.chdir(TMP_DIR)
+        LOCAL_COPY = f"{tmp_dir}{args.vis.split('/')[-1]}"
+        shutil.copytree(vis, LOCAL_COPY)
+        vis = LOCAL_COPY
     else:
         logger.warn(f"Not copying over files. This can cause a memory lock when multiple tasks are trying to access the same visibility set.")
 
-    # Helpful defaults to be aware of
-    phasecenter = ""
-    imsize = [6144, 6144]
-    reffreq=""
+
     for stokes_ in stokes:
+        # Generate unique image name
+        imagename = f"{args.outpath}{args.vis.split('/')[-1]}_{specmode}_{stokes_}_{briggs_weighting}_{imsize[0]}"
+        if os.path.exists(imagename) and not args.force:
+            logger.error(f"An image already exists under this name, use --force to overwrite (received output path: {imagename}).")
+
         print(">>> Starting image: " imagename)
         tclean(
             vis=vis,selectdata=False,field="",spw="",timerange="",
-            uvrange="",antenna="",scan="",observation="",intent="",
-            datacolumn="corrected",imagename=imagename,
+            uvrange=uvrange,antenna="",scan="",observation="",intent="",
+            datacolumn=datacolumn,imagename=imagename,
             imsize=imsize,cell=cell,phasecenter=phasecenter,
             stokes=stokes_,projection="SIN",startmodel="",specmode=specmode,reffreq=reffreq,
             nchan=-1,start=start,width=width,outframe="LSRK",veltype="radio",
-            restfreq=[],interpolation="linear",perchanweightdensity=True,gridder="wproject",facets=1,
-            psfphasecenter="",chanchunks=1,wprojplanes=128,vptable="",mosweight=True,
+            restfreq=[],interpolation="linear",perchanweightdensity=True,gridder=gridder,facets=1,
+            psfphasecenter="",chanchunks=1,wprojplanes=wprojplanes,vptable="",mosweight=True,
             aterm=True,psterm=False,wbawp=True,conjbeams=False,cfcache="",
             usepointing=False,computepastep=360.0,rotatepastep=360.0,pointingoffsetsigdev=0.0,pblimit=0.2,
             normtype="flatnoise",deconvolver=deconvolver,scales=scales,smallscalebias=0.0,
             restoration=True,restoringbeam=[],pbcor=False,outlierfile="",weighting="briggs",
             robust=args.robust,noise="1.0Jy",npixels=0,uvtaper=[],niter=niter,
-            gain=0.1,threshold=0.0001,nsigma=0.0,cycleniter=-1,cyclefactor=1.0,
+            gain=0.1,threshold=threshold,nsigma=0.0,cycleniter=-1,cyclefactor=1.0,
             minpsffraction=0.05,maxpsffraction=0.8,interactive=False,usemask="user",mask="",
             pbmask=0.0,sidelobethreshold=3.0,noisethreshold=5.0,lownoisethreshold=1.5,negativethreshold=0.0,
             smoothfactor=1.0,minbeamfrac=0.3,cutthreshold=0.01,growiterations=75,dogrowprune=True,
             minpercentchange=-1.0,verbose=args.verbose,fastnoise=True,restart=True,savemodel="none",
             calcres=True,calcpsf=True,parallel=True
         )
-    # Copy visibility to scratch disk if requested
+    # Remove temporary folder
     if copy:
+        os.chdir(local)
         shutil.rmtree(vis)
-
 
 if __name__=="__main__":
     main()

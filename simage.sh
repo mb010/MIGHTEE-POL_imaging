@@ -19,8 +19,6 @@ export VIS=/share/nas/mbowles/dev/testing/1538856059_sdp_l0.J0217-0449.mms
 export SPECTRAL=(0 0 2.5 2.5) #Units: MHz (0 defaults to MFS)
 export ROBUST=(-0.5 0.4 -0.5 0.0)
 
-singularity exec which python
-
 echo ">>> Imaging call"
 time \
   singularity exec \
