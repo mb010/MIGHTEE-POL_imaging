@@ -27,7 +27,7 @@ def parse_args(THIS_PROG):
         description="MIGHTEE-POL Imaging: github.com/mb010/MIGHTEE-POL_imaging."
     )
 
-    parser.add_argument("-M", "--vis", type=str, required=False, default="/share/nas/mbowles/dev/processing/1538856059_sdp_l0.J0217-0449.mms", ="Measurement set to be imaged (default: '/share/nas/mbowles/dev/processing/1538856059_sdp_l0.J0217-0449.mms').")
+    parser.add_argument("-M", "--vis", type=str, required=False, default="/share/nas/mbowles/dev/processing/1538856059_sdp_l0.J0217-0449.mms", help="Measurement set to be imaged (default: '/share/nas/mbowles/dev/processing/1538856059_sdp_l0.J0217-0449.mms').")
     parser.add_argument("-o", "--outpath", type=str, required=False, default = "/share/nas/mbowles/images/", help="Full directory path where the images are to be saved (default: '/share/nas/mbowles/images/').")
     parser.add_argument("--copy", type=bool, required=False, default=False, help="Enables copying of visibility to scratch disk during processing to allow for multiple imaging steps to occur from a single visibility set. (default: False).")
 
