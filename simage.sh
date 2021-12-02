@@ -23,6 +23,4 @@ echo ">>> Imaging call"
 time \
   singularity exec \
     --cleanenv --contain --home $PWD:/srv --pwd /srv --bind /share:/share -C $CASA_PATH \
-      mpirun -n $OMP_NUM_THREADS \ # Should probably be `mpirun` with new container!
-        python \ #casa -c \
-          image.py --polarisation --spectral --robust=${ROBUST[$SLURM_ARRAY_ID]} --vis=$VIS --out=${OUT_PATH[$SLURM_ARRAY_ID]}
+      mpirun -n $OMP_NUM_THREADS python image.py --polarisation --spectral --robust=${ROBUST[$SLURM_ARRAY_ID]} --vis=$VIS --out=${OUT_PATH[$SLURM_ARRAY_ID]}
