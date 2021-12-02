@@ -74,7 +74,8 @@ def main():
         stokes = ["I"]
     else:
         if specmode == "cube":
-            stokes = ["I", "Q", "U", "V"]
+            stokes = ["IQUV"]
+            #stokes = ["I", "Q", "U", "V"]
         else:
             stokes = ["IQUV"]
 
@@ -93,7 +94,7 @@ def main():
         shutil.copytree(vis, LOCAL_COPY)
         vis = LOCAL_COPY
     else:
-        logger.warn(f"Not copying over files. This can cause a memory lock when multiple tasks are trying to access the same visibility set.")
+        logger.warn("Not copying over files. This can cause a memory lock when multiple tasks are trying to access the same visibility set.")
 
 
     for stokes_ in stokes:
@@ -102,7 +103,7 @@ def main():
         if os.path.exists(imagename) and not args.force:
             logger.error(f"An image already exists under this name, use --force to overwrite (received output path: {imagename}).")
 
-        print(">>> Starting image: " imagename)
+        logger.info(f">>> Starting image: {imagename}")
         tclean(
             vis=vis,selectdata=False,field="",spw="",timerange="",
             uvrange=uvrange,antenna="",scan="",observation="",intent="",
