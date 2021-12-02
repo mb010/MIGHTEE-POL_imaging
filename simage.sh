@@ -22,5 +22,5 @@ export ROBUST=(-0.5 0.4 -0.5 0.0)
 echo ">>> Imaging call"
 time \
   singularity exec \
-    --cleanenv --contain --home $PWD:/srv --pwd /srv --bind /share:/share -C $CASA_PATH \
-      mpirun -n $OMP_NUM_THREADS python3 image.py --polarisation --spectral --robust=${ROBUST[$SLURM_ARRAY_ID]} --vis=$VIS --copy
+    --containall --home $PWD:/srv --pwd /srv --bind /share:/share $CASA_PATH \
+      mpirun -n $OMP_NUM_THREADS /anaconda3/bin/python image.py --polarisation --spectral --robust=${ROBUST[$SLURM_ARRAY_ID]} --vis=$VIS --copy
