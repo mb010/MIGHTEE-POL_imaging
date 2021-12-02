@@ -60,9 +60,6 @@ def main():
     #------------------------------- running clean -----------------------------
     args = parse_args()
 
-    if os.path.exists(out) and not args.force:
-        logger.error(f"Out path already exists, use --force to overwrite (received output path: {out}).")
-
     # For details see: https://casa.nrao.edu/docs/taskref/tclean-task.html
     # Using CLI to generate appropriate parameters
     niter = args.clean
@@ -85,6 +82,8 @@ def main():
 
     # Name of output image
     imagename = f"{args.outpath}{args.vis.split('/')[-1]}_{specmode}_{stokes}_{str(briggs_weighting)}_{str(imsize[0])}"
+    if os.path.exists(imagename) and not args.force:
+        logger.error(f"An image already exists under this name, use --force to overwrite (received output path: {imagename}).")
 
     # Copy visibility to scratch disk if requested
     vis = args.vis
@@ -92,6 +91,8 @@ def main():
         local_copy = f"/state/partition1/tmp_mbowles/{args.vis.split('/')[-1]}"
         shutil.copytree(vis, local_copy)
         vis = local_copy
+    else:
+        logger.warn(f"Not copying over files. This can cause a memory lock when multiple tasks are trying to access the same visibility set.")
 
     # Helpful defaults to be aware of
     phasecenter = ""
