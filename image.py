@@ -57,6 +57,7 @@ def main():
     uvrange     = '>0.25klambda'
     phasecenter = ""
     reffreq     = ""
+    TMP_DIR  = "/raid/sp1/tmp_bowles"
 
     #------------------------------- running clean -----------------------------
     args = parse_args()
@@ -85,12 +86,11 @@ def main():
     # Copy visibility to scratch disk if requested
     vis = args.vis
     if copy:
-        TMP_DIR  = "/state/partition1/tmp_bowles/"
         os.makedirs(TMP_DIR, exist_ok=True)
         LOCAL_PATH = os.getcwd()
         os.chdir(TMP_DIR)
         logger.info(str(args.vis.split('/')[-1]))
-        LOCAL_COPY = TMP_DIR + args.vis.split('/')[-1]
+        LOCAL_COPY = f"{TMP_DIR}/{args.vis.split('/')[-1]}"
         shutil.copytree(vis, LOCAL_COPY)
         vis = LOCAL_COPY
     else:
