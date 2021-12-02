@@ -11,7 +11,7 @@
 module load openmpi/2.1.1
 ulimit -n 16384
 
-export CASA_PATH=/share/nas/mbowles/mightee/dev/casa-6.simg
+export CASA_PATH=/share/nas/mbowles/dev/casa-6.simg
 export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
 export VIS=/share/nas/mbowles/dev/testing/1538856059_sdp_l0.J0217-0449.mms
 
@@ -23,5 +23,5 @@ time \
   singularity exec \
     --cleanenv --contain --home $PWD:/srv --pwd /srv --bind /share:/share -C $CASA_PATH \
       mpirun -n $OMP_NUM_THREADS \ # Should probably be `mpirun` with new container!
-        casa -c \
+        python \ #casa -c \
           image.py --polarisation --spectral --robust=${ROBUST[$SLURM_ARRAY_ID]} --vis=$VIS --out=${OUT_PATH[$SLURM_ARRAY_ID]}
