@@ -61,7 +61,7 @@ def main():
     args = parse_args()
 
     if os.path.exists(out) and not args.force:
-        logger.error(f"Out path already exists, use --force to overwrite (received output path: {}).")
+        logger.error(f"Out path already exists, use --force to overwrite (received output path: {out}).")
 
     # For details see: https://casa.nrao.edu/docs/taskref/tclean-task.html
     # Using CLI to generate appropriate parameters
