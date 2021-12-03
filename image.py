@@ -4,7 +4,7 @@ import argparse
 import logging
 from casatasks import tclean
 
-from casatools import msmetadata
+from casatools import msmetadata, casalog
 import casampi
 
 logfile=casalog.logfile()
