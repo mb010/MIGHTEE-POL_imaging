@@ -20,7 +20,4 @@ export SPECTRAL=(0 0 2.5 2.5) #Units: MHz (0 defaults to MFS)
 export ROBUST=(-0.5 0.4 -0.5 0.0)
 
 echo ">>> Imaging call"
-time \
-  singularity exec \
-    --containall --home $PWD:/srv --pwd /srv --bind /share:/share $CASA_PATH \
-      mpirun -n $OMP_NUM_THREADS /anaconda3/bin/python image.py --polarisation --spectral --robust=${ROBUST[$SLURM_ARRAY_ID]} --vis=$VIS --copy
+time singularity exec --containall --home $PWD:/srv --pwd /srv --bind /share:/share $CASA_PATH mpirun --mca oob tcp -n $OMP_NUM_THREADS /anaconda3/bin/python image.py --polarisation --spectral --robust=${ROBUST[$SLURM_ARRAY_ID]} --vis=$VIS --copy

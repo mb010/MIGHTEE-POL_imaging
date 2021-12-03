@@ -14,6 +14,8 @@ msmd = msmetadata()
 logging.Formatter.converter = gmtime
 logger = logging.getLogger(__name__)
 logging.basicConfig(format="%(asctime)-15s %(levelname)s: %(message)s")
+loglevel = logging.DEBUG# if verbose else logging.INFO
+logger.setLevel(loglevel)
 
 def parse_args(THIS_PROG):
     """
@@ -57,7 +59,7 @@ def main():
     uvrange     = '>0.25klambda'
     phasecenter = ""
     reffreq     = ""
-    TMP_DIR  = "/raid/sp1/tmp_bowles"
+    TMP_DIR     = "/state/partition1/tmp_bowles"
 
     #------------------------------- running clean -----------------------------
     args = parse_args()
