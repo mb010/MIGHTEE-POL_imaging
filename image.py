@@ -2,13 +2,12 @@ import os, sys
 import shutil
 import argparse
 import logging
-from casatasks import tclean
+from time import gmtime
 
-from casatools import msmetadata, casalog
+from casatasks import tclean
+from casatools import msmetadata
 import casampi
 
-logfile=casalog.logfile()
-casalog.setlogfile('logs/{SLURM_JOB_NAME}-{SLURM_JOB_ID}.casa'.format(**os.environ))
 msmd = msmetadata()
 
 logging.Formatter.converter = gmtime
