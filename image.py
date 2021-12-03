@@ -58,7 +58,8 @@ def main():
     uvrange     = '>0.25klambda'
     phasecenter = ""
     reffreq     = ""
-    TMP_DIR     = "/state/partition1/tmp_bowles"
+    LOCAL_NAS   = "/state/partition1/"
+    TMP_DIR     = "tmp_bowles"
 
     #------------------------------- running clean -----------------------------
     args = parse_args()
@@ -86,12 +87,13 @@ def main():
 
     # Copy visibility to scratch disk if requested
     vis = args.vis
-    if copy:
-        os.makedirs(TMP_DIR, exist_ok=True)
+    if args.copy:
         LOCAL_PATH = os.getcwd()
+        os.chdir(LOCAL_NAS)
+        os.makedirs(TMP_DIR, exist_ok=True)
         os.chdir(TMP_DIR)
-        logger.info(str(args.vis.split('/')[-1]))
-        LOCAL_COPY = f"{TMP_DIR}/{args.vis.split('/')[-1]}"
+        LOCAL_COPY = f"{args.vis.split('/')[-1]}"
+        logger.info(f"Copyting data to {LOCAL_NAS}/{TMP_DIR}/ under the name: {LOCAL_COPY}")
         shutil.copytree(vis, LOCAL_COPY)
         vis = LOCAL_COPY
     else:
@@ -127,7 +129,7 @@ def main():
             calcres=True,calcpsf=True,parallel=True
         )
     # Remove temporary folder
-    if copy:
+    if args.copy:
         os.chdir(local)
         shutil.rmtree(vis)
 
