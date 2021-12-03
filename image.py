@@ -16,7 +16,7 @@ logging.basicConfig(format="%(asctime)-15s %(levelname)s: %(message)s")
 loglevel = logging.DEBUG# if verbose else logging.INFO
 logger.setLevel(loglevel)
 
-def parse_args(THIS_PROG):
+def parse_args():
     """
     Parse in command line arguments.
     """
@@ -30,17 +30,17 @@ def parse_args(THIS_PROG):
 
     parser.add_argument("-M", "--vis", type=str, required=False, default="/share/nas/mbowles/dev/processing/1538856059_sdp_l0.J0217-0449.mms", help="Measurement set to be imaged (default: '/share/nas/mbowles/dev/processing/1538856059_sdp_l0.J0217-0449.mms').")
     parser.add_argument("-o", "--outpath", type=str, required=False, default = "/share/nas/mbowles/images/", help="Full directory path where the images are to be saved (default: '/share/nas/mbowles/images/').")
-    parser.add_argument("--copy", type=bool, required=False, default=False, help="Enables copying of visibility to scratch disk during processing to allow for multiple imaging steps to occur from a single visibility set. (default: False).")
+    parser.add_argument("--copy", action="store_true", required=False, default=False, help="Enables copying of visibility to scratch disk during processing to allow for multiple imaging steps to occur from a single visibility set. (default: False).")
 
-    parser.add_argument("-P", "--polarisation", type=bool, required=False, default=False, help="Enables production of IQUV images (default: False).")
+    parser.add_argument("-P", "--polarisation", action="store_true", required=False, default=False, help="Enables production of IQUV images (default: False).")
     parser.add_argument("-r", "--robust", type=float, required=False, default=-0.5, help="Robust parameter used for imaging (default: -0.5).")
-    praser.add_argument("--clean", type=int, default=100000, required=False, help="Cleans iterations used. Set to 0 for quick dirty images (default: 100000).")
+    parser.add_argument("--clean", type=int, default=100000, required=False, help="Cleans iterations used. Set to 0 for quick dirty images (default: 100000).")
     parser.add_argument("--spectral", type=float, required=False, default=0, help="Sets spectral imaging width of cube (MHz). Uses MFS if set to 0 (default: 0).")
     parser.add_argument("--RM", type=bool, required=False, default=False, help="Produces Faraday spectra cubes (default: False).")
     parser.add_argument("--cellsize", type=float, default=1.5, required=False, help="Cell size paramter in arcsec (default: 1.0).")
 
-    parser.add_argument("-v", "--verbose", type=bool, default=False, required=False, help="Verbose output.")
-    parser.add_argument("-f", "--force", type=bool, default=False, required=False, help="Forces overwrite of output (default: False).")
+    parser.add_argument("-v", "--verbose", action="store_true", default=False, required=False, help="Verbose output.")
+    parser.add_argument("-f", "--force", action="store_true", default=False, required=False, help="Forces overwrite of output (default: False).")
 
     args, unknown = parser.parse_known_args()
 
