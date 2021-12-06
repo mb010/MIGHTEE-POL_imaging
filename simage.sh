@@ -20,4 +20,4 @@ export SPECTRAL=(0 0 2.5 2.5) #Units: MHz (0 defaults to MFS)
 export ROBUST=(-0.5 0.4 -0.5 0.0)
 
 echo ">>> Imaging call"
-time mpirun --mca oob tcp singularity exec --bind /share:/share /share/nas/mbowles/dev/casa-6.simg python image.py --polarisation --spectral=${SPECTRAL[$SLURM_ARRAY_ID]} --robust=${ROBUST[$SLURM_ARRAY_ID]} --vis=$VIS --copy
+time mpirun --mca oob tcp singularity exec --bind /share,/state/partition1 /share/nas/mbowles/dev/casa-6.simg python image.py --polarisation --spectral=${SPECTRAL[$SLURM_ARRAY_TASK_ID]} --robust=${ROBUST[$SLURM_ARRAY_TASK_ID]} --vis=$VIS --copy

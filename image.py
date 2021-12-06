@@ -93,7 +93,7 @@ def main():
         os.makedirs(TMP_DIR, exist_ok=True)
         os.chdir(TMP_DIR)
         LOCAL_COPY = f"{args.vis.split('/')[-1]}"
-        logger.info(f"Copyting data to {LOCAL_NAS}/{TMP_DIR}/ under the name: {LOCAL_COPY}")
+        logger.info(f"Copying data to {LOCAL_NAS}{TMP_DIR}/ under the name: {LOCAL_COPY}")
         shutil.copytree(vis, LOCAL_COPY)
         vis = LOCAL_COPY
     else:
@@ -102,7 +102,7 @@ def main():
 
     for stokes_ in stokes:
         # Generate unique image name
-        imagename = f"{args.outpath}{args.vis.split('/')[-1]}_{specmode}_{stokes_}_{briggs_weighting}_{imsize[0]}"
+        imagename = f"{args.outpath}{args.vis.split('/')[-1]}_{specmode}_{stokes_}_{args.robust}_{imsize[0]}"
         if os.path.exists(imagename) and not args.force:
             logger.error(f"An image already exists under this name, use --force to overwrite (received output path: {imagename}).")
 
@@ -113,9 +113,9 @@ def main():
             datacolumn=datacolumn,imagename=imagename,
             imsize=imsize,cell=cell,phasecenter=phasecenter,
             stokes=stokes_,projection="SIN",startmodel="",specmode=specmode,reffreq=reffreq,
-            nchan=-1,start=start,width=width,outframe="LSRK",veltype="radio",
+            nchan=-1,start="",width=width,outframe="LSRK",veltype="radio",
             restfreq=[],interpolation="linear",perchanweightdensity=True,gridder=gridder,facets=1,
-            psfphasecenter="",chanchunks=1,wprojplanes=wprojplanes,vptable="",mosweight=True,
+            psfphasecenter="",wprojplanes=wprojplanes,vptable="",mosweight=True,
             aterm=True,psterm=False,wbawp=True,conjbeams=False,cfcache="",
             usepointing=False,computepastep=360.0,rotatepastep=360.0,pointingoffsetsigdev=0.0,pblimit=0.2,
             normtype="flatnoise",deconvolver=deconvolver,scales=scales,smallscalebias=0.0,
@@ -130,6 +130,7 @@ def main():
         )
     # Remove temporary folder
     if args.copy:
+        logger.info(f"Removing temporary directory: {}{TMP_DIR}")
         os.chdir(local)
         shutil.rmtree(vis)
 
