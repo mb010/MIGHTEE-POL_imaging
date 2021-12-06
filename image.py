@@ -130,7 +130,7 @@ def main():
         )
     # Remove temporary folder
     if args.copy:
-        logger.info(f"Removing temporary directory: {}{TMP_DIR}")
+        logger.info(f"Removing temporary data: {vis}")
         os.chdir(local)
         shutil.rmtree(vis)
 
