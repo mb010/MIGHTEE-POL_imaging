@@ -93,8 +93,11 @@ def main():
         os.makedirs(TMP_DIR, exist_ok=True)
         os.chdir(TMP_DIR)
         LOCAL_COPY = f"{args.vis.split('/')[-1]}"
-        logger.info(f"Copying data to {LOCAL_NAS}{TMP_DIR}/ under the name: {LOCAL_COPY}")
-        shutil.copytree(vis, LOCAL_COPY)
+        if os.path.exists(LOCAL_COPY):
+            logger.info(f"A local copy of the MS already exists at {LOCAL_NAS}{TMP_DIR}/{LOCAL_COPY} (likely due to a previous run failing).")
+        else:
+            logger.info(f"Copying data to {LOCAL_NAS}{TMP_DIR}/ under the name: {LOCAL_COPY}")
+            shutil.copytree(vis, LOCAL_COPY)
         vis = LOCAL_COPY
     else:
         logger.warn("Not copying over files. This can cause a memory lock when multiple tasks are trying to access the same visibility set.")
