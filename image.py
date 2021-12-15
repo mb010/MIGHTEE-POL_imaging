@@ -6,7 +6,14 @@ from time import gmtime
 
 from casatasks import tclean
 from casatools import msmetadata
-import casampi
+
+#import casampi
+#from mpi4casa.MPICommandClient import MPICommandClient
+#client = MPICommandClient()
+#client.set_log_mode('redirect')
+#client.start_services()
+#ret = client.push_command_request(command,block,target_server,parameters)
+
 
 msmd = msmetadata()
 
@@ -72,13 +79,17 @@ def main():
     specmode = "cube" if (args.RM or abs(args.spectral)>0) else "mfs"
     width = str(args.spectral)+"MHz" if specmode=="cube" else ""
     deconvolver = "multiscale" if specmode=="cube" else "mtmfs"
+    start = ""
+    nchan = -1
 
     if not args.polarisation:
         stokes = ["I"]
     else:
         if specmode == "cube":
-            #stokes = ["IQUV"]
-            stokes = ["I", "Q", "U", "V"]
+            stokes = ["IQUV"]
+            #stokes = ["I", "Q", "U", "V"]
+            #nchan = []
+            #start = []
         else:
             stokes = ["IQUV"]
 
@@ -116,7 +127,7 @@ def main():
             datacolumn=datacolumn,imagename=imagename,
             imsize=imsize,cell=cell,phasecenter=phasecenter,
             stokes=stokes_,projection="SIN",startmodel="",specmode=specmode,reffreq=reffreq,
-            nchan=-1,start="",width=width,outframe="LSRK",veltype="radio",
+            nchan=nchan,start=start,width=width,outframe="LSRK",veltype="radio",
             restfreq=[],interpolation="linear",perchanweightdensity=True,gridder=gridder,facets=1,
             psfphasecenter="",wprojplanes=wprojplanes,vptable="",mosweight=True,
             aterm=True,psterm=False,wbawp=True,conjbeams=False,cfcache="",
