@@ -43,6 +43,9 @@ def parse_args():
     parser.add_argument("-r", "--robust", type=float, required=False, default=-0.5, help="Robust parameter used for imaging (default: -0.5).")
     parser.add_argument("--clean", type=int, default=100000, required=False, help="Cleans iterations used. Set to 0 for quick dirty images (default: 100000).")
     parser.add_argument("--spectral", type=float, required=False, default=0, help="Sets spectral imaging width of cube (MHz). Uses MFS if set to 0 (default: 0).")
+    parser.add_argument("--nspw", type=int, required=False, default=1, help="Denotes how many spw blocks the imaging is to be split into (default: 1).")
+    parser.add_argument("--spwidx", type=int, required=False, default=0, help="Denotes which spw block this run is for (default: 0).")
+
     parser.add_argument("--RM", type=bool, required=False, default=False, help="Produces Faraday spectra cubes (default: False).")
     parser.add_argument("--cellsize", type=float, default=1.5, required=False, help="Cell size paramter in arcsec (default: 1.0).")
 
@@ -65,6 +68,7 @@ def main():
     uvrange     = '>0.25klambda'
     phasecenter = ""
     reffreq     = ""
+    freqRanges = [886,1680]
     LOCAL_NAS   = "/state/partition1/"
     TMP_DIR     = "tmp_bowles"
 
@@ -77,11 +81,28 @@ def main():
     cell = str(args.cellsize)+"arcsec"
 
     specmode = "cube" if (args.RM or abs(args.spectral)>0) else "mfs"
-    width = str(args.spectral)+"MHz" if specmode=="cube" else ""
-    deconvolver = "multiscale" if specmode=="cube" else "mtmfs"
-    start = ""
-    nchan = -1
 
+    # Adjust parameters according to specmode
+    if specmode == "cube":
+        # start and nchan depend on spw chunk according to slurm job
+        # Calculate starting frequency for this specific spw chunk
+        l, u = freqRanges
+        start = l + (u-l) / args.nspw * args.spwidx
+        end   = l + (u-l) / args.nspw * (args.spwidx+1)
+
+        # Produce usable values for CASA
+        nchan = int((end-start)/args.spectral) # Calculate number of channels
+        start = f"{start}MHz"
+        width = f"{str(args.spectral)}MHz"
+        deconvolver = "multiscale"
+    else:
+        nchan = -1
+        start = ""
+        width = ""
+        deconvolver = "mtmfs"
+
+
+    # MFS or IQUV Image
     if not args.polarisation:
         stokes = ["I"]
     else:
