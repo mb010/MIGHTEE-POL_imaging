@@ -35,14 +35,17 @@ def parse_args():
         description="MIGHTEE-POL Imaging: github.com/mb010/MIGHTEE-POL_imaging."
     )
 
-    parser.add_argument("-M", "--vis", type=str, required=False, default="/share/nas/mbowles/dev/processing/1538856059_sdp_l0.J0217-0449.mms", help="Measurement set to be imaged (default: '/share/nas/mbowles/dev/processing/1538856059_sdp_l0.J0217-0449.mms').")
-    parser.add_argument("-o", "--outpath", type=str, required=False, default = "/share/nas/mbowles/images/", help="Full directory path where the images are to be saved (default: '/share/nas/mbowles/images/').")
+    parser.add_argument("-M", "--vis", type=str, required=False, default="/share/nas2/mbowles/dev/processing/1538856059_sdp_l0.J0217-0449.mms", help="Measurement set to be imaged (default: '/share/nas2/mbowles/dev/processing/1538856059_sdp_l0.J0217-0449.mms').")
+    parser.add_argument("-o", "--outpath", type=str, required=False, default = "/share/nas2/mbowles/images/", help="Full directory path where the images are to be saved (default: '/share/nas2/mbowles/images/').")
     parser.add_argument("--copy", action="store_true", required=False, default=False, help="Enables copying of visibility to scratch disk during processing to allow for multiple imaging steps to occur from a single visibility set. (default: False).")
 
     parser.add_argument("-P", "--polarisation", action="store_true", required=False, default=False, help="Enables production of IQUV images (default: False).")
     parser.add_argument("-r", "--robust", type=float, required=False, default=-0.5, help="Robust parameter used for imaging (default: -0.5).")
     parser.add_argument("--clean", type=int, default=100000, required=False, help="Cleans iterations used. Set to 0 for quick dirty images (default: 100000).")
     parser.add_argument("--spectral", type=float, required=False, default=0, help="Sets spectral imaging width of cube (MHz). Uses MFS if set to 0 (default: 0).")
+    parser.add_argument("--nspw", type=int, required=False, default=1, help="Denotes how many spw blocks the imaging is to be split into (default: 1).")
+    parser.add_argument("--spwidx", type=int, required=False, default=0, help="Denotes which spw block this run is for (default: 0).")
+
     parser.add_argument("--RM", type=bool, required=False, default=False, help="Produces Faraday spectra cubes (default: False).")
     parser.add_argument("--cellsize", type=float, default=1.5, required=False, help="Cell size paramter in arcsec (default: 1.0).")
 
@@ -65,6 +68,7 @@ def main():
     uvrange     = '>0.25klambda'
     phasecenter = ""
     reffreq     = ""
+    freqRanges = [886, 1680]
     LOCAL_NAS   = "/state/partition1/"
     TMP_DIR     = "tmp_bowles"
 
@@ -77,17 +81,35 @@ def main():
     cell = str(args.cellsize)+"arcsec"
 
     specmode = "cube" if (args.RM or abs(args.spectral)>0) else "mfs"
-    width = str(args.spectral)+"MHz" if specmode=="cube" else ""
-    deconvolver = "multiscale" if specmode=="cube" else "mtmfs"
-    start = ""
-    nchan = -1
 
+    # Adjust parameters according to specmode
+    if specmode == "cube":
+        # start and nchan depend on spw chunk according to slurm job
+        # Calculate starting frequency for this specific spw chunk
+        l, u = freqRanges
+        extent = u-l
+        start = l + extent/args.nspw * args.spwidx
+
+        # Produce usable values for CASA
+        nchan = int(extent/args.nspw/args.spectral) # Calculate number of channels
+        print(f">>> TEST: start {start} extent/nspw {extent/args.nspw} nchan {nchan} end {start+nchan*args.spectral}")
+        start = f"{start}MHz"
+        width = f"{str(args.spectral)}MHz"
+        deconvolver = "multiscale"
+    else:
+        nchan = -1
+        start = ""
+        width = ""
+        deconvolver = "mtmfs"
+
+
+    # MFS or IQUV Image
     if not args.polarisation:
         stokes = ["I"]
     else:
         if specmode == "cube":
-            stokes = ["IQUV"]
-            #stokes = ["I", "Q", "U", "V"]
+            #stokes = ["IQUV"]
+            stokes = ["I", "Q", "U", "V"]
             #nchan = []
             #start = []
         else:
@@ -116,7 +138,7 @@ def main():
 
     for stokes_ in stokes:
         # Generate unique image name
-        imagename = f"{args.outpath}{args.vis.split('/')[-1]}_{specmode}_{stokes_}_{args.robust}_{imsize[0]}"
+        imagename = f"{args.outpath}{args.vis.split('/')[-1]}_{specmode}_{stokes_}_{args.robust}_{imsize[0]}_{args.spwidx}"
         if os.path.exists(imagename) and not args.force:
             logger.error(f"An image already exists under this name, use --force to overwrite (received output path: {imagename}).")
 
@@ -140,7 +162,7 @@ def main():
             pbmask=0.0,sidelobethreshold=3.0,noisethreshold=5.0,lownoisethreshold=1.5,negativethreshold=0.0,
             smoothfactor=1.0,minbeamfrac=0.3,cutthreshold=0.01,growiterations=75,dogrowprune=True,
             minpercentchange=-1.0,verbose=args.verbose,fastnoise=True,restart=True,savemodel="none",
-            calcres=True,calcpsf=True,parallel=True
+            calcres=True,calcpsf=True,parallel=False
         )
     # Remove temporary folder
     if args.copy:
