@@ -13,7 +13,6 @@
 module load openmpi-2.1.1
 ulimit -n 16384
 
-#export CONTAINER=/share/nas2/mbowles/dev/casa-6_.simg
 export CONTAINER=/share/nas2/mbowles/dev/casa-6_v2.simg
 export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
 export VIS=/share/nas2/mbowles/dev/testing/1538856059_sdp_l0.J0217-0449.mms
