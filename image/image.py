@@ -46,7 +46,7 @@ def parse_args():
     parser.add_argument("--nspw", type=int, required=False, default=1, help="Denotes how many spw blocks the imaging is to be split into (default: 1).")
     parser.add_argument("--spwidx", type=int, required=False, default=0, help="Denotes which spw block this run is for (default: 0).")
 
-    parser.add_argument("--RM", type=bool, required=False, default=False, help="Produces Faraday spectra cubes (default: False).")
+    parser.add_argument("--RM", type=bool, required=False, default=False, help="NotImplmented: Produces Faraday spectra cubes (default: False).")
     parser.add_argument("--cellsize", type=float, default=1.5, required=False, help="Cell size paramter in arcsec (default: 1.0).")
 
     parser.add_argument("-v", "--verbose", action="store_true", default=False, required=False, help="Verbose output.")

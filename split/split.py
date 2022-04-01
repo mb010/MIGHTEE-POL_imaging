@@ -7,6 +7,14 @@ from time import gmtime
 import casatasks
 from casatools import msmetadata
 
+msmd = msmetadata()
+
+logging.Formatter.converter = gmtime
+logger = logging.getLogger(__name__)
+logging.basicConfig(format="%(asctime)-15s %(levelname)s: %(message)s")
+loglevel = logging.DEBUG# if verbose else logging.INFO
+logger.setLevel(loglevel)
+
 def parse_args():
     """
     Parse in command line arguments.
@@ -20,7 +28,8 @@ def parse_args():
     )
 
     parser.add_argument("-M", "--vis", type=str, required=False, default="/share/nas2/mbowles/dev/processing/1538856059_sdp_l0.J0217-0449.mms", help="Measurement set to be imaged (default: '/share/nas/mbowles/dev/processing/1538856059_sdp_l0.J0217-0449.mms').")
-    parser.add_argument("-o", "--outpath", type=str, required=False, default = "/share/nas2/mbowles/tmp", help="Full directory path where the split data are to be saved (default: '/share/nas2/mbowles/tmp').")
+    parser.add_argument("-O", "--outpath", type=str, required=False, default="/share/nas2/mbowles/dev/processing/1538856059_sdp_l0.J0217-0449.mms", help="Measurement set to be imaged (default: '/share/nas/mbowles/dev/processing/1538856059_sdp_l0.J0217-0449.mms').")
+    parser.add_argument("-C", "--channelwidth", type=str, required=False, default="2.5078", help="Channel width to use for splitting. Default: 2.5078")
     parser.add_argument("-v", "--verbose", action="store_true", default=False, required=False, help="Verbose output.")
     parser.add_argument("-f", "--force", action="store_true", default=False, required=False, help="Forces overwrite of output (default: False).")
 
@@ -41,8 +50,8 @@ class Split():
         self.vis = vis
         self.outdir = outdir
         self.datacolumn = datacolumn # Should maybe be 'corrected'
-        self.freq_range = [int(f)*1e6 for f in frequency_range.split('-')]
-        self.chan_width = int(chan_width * 1e6)
+        self.freq_range = [int(f)*1e6 for f in freq_range.split('-')]
+        self.chan_width = int(float(chan_width) * 1e6)
         self.filebase = self.vis.rstrip('.mms').split('/')[-1]
         self.force = force
 
@@ -53,7 +62,9 @@ class Split():
         self.split()
 
     def split(self):
+        counter = 0
         while (self.start_freq <= self.freq_range[1]):
+            counter+=1
             self.start_freq = self.start_freq + self.chan_width
             self.stop_freq  = self.start_freq + self.chan_width
             self.spw = f"*:{self.start_freq}~{self.stop_freq}Hz"
@@ -72,7 +83,7 @@ class Split():
                     )
                     self.out_files.append(f"{self.outdir}/{filename}")
                 except:
-                    logger.warn(f"Split for range {self.spw} failed. Not including in list to be imaged")
+                    logger.warn(f"Split {counter} failed (range {self.spw}). Not including in list to be imaged")
             else:
                 logger.info(f"Folder already exists at output: {filename}. Not including in list to be imaged.")
         logger.info(f"Split {len(self.out_files)} out of a total possible {(self.freq_range[1]-self.freq_range[0])//self.chan_width} channel splits.")
@@ -80,17 +91,17 @@ class Split():
 def main():
     args = parse_args()
     split = Split(
-        vis=args['vis'],
+        vis=args.vis,
         datacolumn='data',
-        chan_width=2.5078,
-        force=args['force'],
-        outdir=args['outpath']
+        chan_width=args.channelwidth,
+        force=args.force,
+        outdir=args.outpath
     )
+    # Write file names to txt
     files = split.out_files
-    with open(f"{split.outdir}/{split.filebase}_split.txt", 'w') as f:
+    with open(f"{split.outdir}{split.filebase}_split.txt", 'w') as f:
         for item in my_list:
-            f.write("%s\n" % item)
-    # TODO: Write to txt for reading in future sbatch submission
+            f.write(f"{item}\n")
 
 if __name__=="__main__":
     main()
