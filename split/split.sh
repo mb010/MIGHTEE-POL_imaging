@@ -16,4 +16,4 @@ time singularity exec --bind /share,/state/partition1 $CONTAINER \
   python ./split/split.py \
     --vis=$VIS \
     --channelwidth=$CHANNEL_WIDTH \
-    --outpath=/share/nas2/mbowles/tmp
+    --outdir=$OUTDIR

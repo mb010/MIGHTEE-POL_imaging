@@ -14,7 +14,6 @@ from casatools import msmetadata
 #client.start_services()
 #ret = client.push_command_request(command,block,target_server,parameters)
 
-
 msmd = msmetadata()
 
 logging.Formatter.converter = gmtime
@@ -59,16 +58,16 @@ def parse_args():
 def main():
     #--------------------------- edit these parameters -------------------------
     parameters = {
-        'threshold'   = '0.04mJy',
-        'imsize'      = [6144, 6144],
-        'wprojplanes' = 768,
-        'datacolumn'  = 'data', # Not 'corrected'?
-        'gridder'     = 'wproject',
-        'stokes'      = 'IQUV',
-        'uvrange'     = '>0.25klambda',
-        'phasecenter' = "",
-        'reffreq'     = "",
-        'parallel'    = True
+        'threshold'   :'0.04mJy',
+        'imsize'      : [6144, 6144],
+        'wprojplanes' : 768,
+        'datacolumn'  : 'data', # Not 'corrected'?
+        'gridder'     : 'wproject',
+        'stokes'      : 'IQUV',
+        'uvrange'     : '>0.25klambda',
+        'phasecenter' : "",
+        'reffreq'     : "",
+        'parallel'    : True
     }
     LOCAL_NAS   = "/state/partition1/"
     TMP_DIR     = "tmp_bowles"
@@ -90,7 +89,7 @@ def main():
     parameters['nchan'] = -1
 
     # Adjust parameters according to specmode
-    if specmode == "cube":
+    if parameters['specmode'] == "cube":
         # start and nchan depend on spw chunk according to slurm job
         # Calculate starting frequency for this specific spw chunk
         l, u = freqRanges
