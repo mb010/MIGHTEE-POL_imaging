@@ -28,11 +28,11 @@ def parse_args():
     )
 
     parser.add_argument("-M", "--vis", type=str, required=False, default="/share/nas2/mbowles/dev/processing/1538856059_sdp_l0.J0217-0449.mms", help="Measurement set to be imaged (default: '/share/nas/mbowles/dev/processing/1538856059_sdp_l0.J0217-0449.mms').")
-    parser.add_argument("-O", "--outpath", type=str, required=False, default="/share/nas2/mbowles/dev/processing/1538856059_sdp_l0.J0217-0449.mms", help="Measurement set to be imaged (default: '/share/nas/mbowles/dev/processing/1538856059_sdp_l0.J0217-0449.mms').")
+    parser.add_argument("-O", "--outdir", type=str, required=False, default="/share/nas2/mbowles/dev/processing/1538856059_sdp_l0.J0217-0449.mms", help="Measurement set to be imaged (default: '/share/nas/mbowles/dev/processing/1538856059_sdp_l0.J0217-0449.mms').")
     parser.add_argument("-C", "--channelwidth", type=str, required=False, default="2.5078", help="Channel width to use for splitting. Default: 2.5078")
     parser.add_argument("-v", "--verbose", action="store_true", default=False, required=False, help="Verbose output.")
     parser.add_argument("-f", "--force", action="store_true", default=False, required=False, help="Forces overwrite of output (default: False).")
-
+    parser.add_argument("-n", "--index", type=int, required=False, default=None, help="If provided splits a single channel range out for that given index, i.e. N=5 will split out the 5th channel as a seperate ms. (Default is to split the whole data set).")
     args, unknown = parser.parse_known_args()
     return args
 
@@ -44,7 +44,8 @@ class Split():
         chan_width,
         force,
         outdir,
-        freq_range = "880-1680"
+        freq_range = "880-1680",
+        index = None
         ):
         # Read in parameters
         self.vis = vis
@@ -70,18 +71,22 @@ class Split():
             self.spw = f"*:{self.start_freq}~{self.stop_freq}Hz"
             # Decided on filename formatting. Index should be easier with slurm jobs
             #filename = f"{self.outdir}{self.filebase}.{self.spw}.ms"
-            filename = f"{self.outdir}/{self.filebase}{len(self.out_files)}.ms"
+            filename = f"{self.outdir}{self.filebase}_{self.spw}_{len(self.out_files)}.ms"
 
             if ~os.path.isdir(filename) or self.force:
+                # MS -> MMS: Image each channel afterwards? Doesnt matter if bash
+                # INDEX from sbatch call
+                # TAQL to access table and detect if the data is there? <- harder. xD
                 try:
                     casatasks.split(
                         vis = self.vis,
                         outputvis=filename,
                         keepmms=False,
                         width=1,
+                        spw=self.spw,
                         datacolumn=self.datacolumn
                     )
-                    self.out_files.append(f"{self.outdir}/{filename}")
+                    self.out_files.append(f"{self.outdir}{filename}")
                 except:
                     logger.warn(f"Split {counter} failed (range {self.spw}). Not including in list to be imaged")
             else:
@@ -90,17 +95,18 @@ class Split():
 
 def main():
     args = parse_args()
+
     split = Split(
         vis=args.vis,
         datacolumn='data',
         chan_width=args.channelwidth,
         force=args.force,
-        outdir=args.outpath
+        outdir=args.outdir,
+        index=args.index
     )
     # Write file names to txt
-    files = split.out_files
     with open(f"{split.outdir}{split.filebase}_split.txt", 'w') as f:
-        for item in my_list:
+        for item in split.out_files:
             f.write(f"{item}\n")
 
 if __name__=="__main__":
