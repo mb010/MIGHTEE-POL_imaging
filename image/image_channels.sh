@@ -14,12 +14,15 @@
 
 module load openmpi-2.1.1
 ulimit -n 16384
-FILE_NAME=${basename $VIS}
-PATH_LIST="${OUTDIR}${FILE_NAME%.*ms}_split.txt"
-CHANNEL=$(awk "NR==${SLURM_ARRAY_TASK_ID+1}" $PATH_LIST)
+
+MS_NAME=$(basename $VIS)
+CHANNEL="${OUTDIR}${MS_NAME%.*ms}_${SLURM_ARRAY_TASK_ID}.ms"
+#PATH_LIST="${OUTDIR}${FILE_NAME%.*ms}_split.txt"
+#CHANNEL=$(awk "NR==${SLURM_ARRAY_TASK_ID+1}" $PATH_LIST)
+
 ROBUST="$1"
 
-if [ -f "$CHANNEL" ] || [ -d "$CHANNEL"]; then
+if [ -f "$CHANNEL" ] || [ -d "$CHANNEL" ]; then
   echo ">>> Imaging Call of a Channel: ${CHANNEL} <<<"
   time singularity exec --bind /share,/state/partition1 $CONTAINER \
     python ./image/image.py \
@@ -27,7 +30,6 @@ if [ -f "$CHANNEL" ] || [ -d "$CHANNEL"]; then
         --robust=$ROBUST \
         --vis=$CHANNEL \
         --outpath=$OUTDIR
-
 else
     echo ">>> NOT Imaging: $CHANNEL is not a valid path / file. <<<"
 fi

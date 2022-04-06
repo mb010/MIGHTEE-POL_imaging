@@ -67,7 +67,7 @@ def main():
         'uvrange'     : '>0.25klambda',
         'phasecenter' : "",
         'reffreq'     : "",
-        'parallel'    : True
+        'parallel'    : False
     }
     LOCAL_NAS   = "/state/partition1/"
     TMP_DIR     = "tmp_bowles"

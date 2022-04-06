@@ -55,6 +55,7 @@ class Split():
         self.chan_width = int(float(chan_width) * 1e6)
         self.filebase = self.vis.rstrip('.mms').split('/')[-1]
         self.force = force
+        self.index = index
 
         # Will be changed as each split is made
         self.start_freq = self.freq_range[0]
@@ -63,35 +64,39 @@ class Split():
         self.split()
 
     def split(self):
-        counter = 0
+        if self.index is not None:
+            counter = self.index
+        else:
+            counter = 0
         while (self.start_freq <= self.freq_range[1]):
             counter+=1
-            self.start_freq = self.start_freq + self.chan_width
-            self.stop_freq  = self.start_freq + self.chan_width
-            self.spw = f"*:{self.start_freq}~{self.stop_freq}Hz"
+            self.start_freq = self.start_freq + self.chan_width*(counter-1)
+            self.stop_freq  = self.start_freq + self.chan_width*counter
+            self.spw = f"*:{self.start_freq}~{self.stop_freq}Hz" ### use self.index to calculate
             # Decided on filename formatting. Index should be easier with slurm jobs
             #filename = f"{self.outdir}{self.filebase}.{self.spw}.ms"
-            filename = f"{self.outdir}{self.filebase}_{self.spw}_{len(self.out_files)}.ms"
+            filename = f"{self.outdir}{self.filebase}_{counter}.ms"
 
             if ~os.path.isdir(filename) or self.force:
-                # MS -> MMS: Image each channel afterwards? Doesnt matter if bash
+                # MS -> MMS: Image each channel afterwards? Doesnt matter if bash - Didnt work. Splitting an MMS like that is uncontrolled.
                 # INDEX from sbatch call
                 # TAQL to access table and detect if the data is there? <- harder. xD
-                try:
-                    casatasks.split(
-                        vis = self.vis,
-                        outputvis=filename,
-                        keepmms=False,
-                        width=1,
-                        spw=self.spw,
-                        datacolumn=self.datacolumn
-                    )
-                    self.out_files.append(f"{self.outdir}{filename}")
-                except:
-                    logger.warn(f"Split {counter} failed (range {self.spw}). Not including in list to be imaged")
+                casatasks.split(
+                    vis = self.vis,
+                    outputvis=filename,
+                    keepmms=False,
+                    width=1,
+                    spw=self.spw,
+                    datacolumn=self.datacolumn
+                )
+                self.out_files.append(f"{self.outdir}{filename}")
+            if self.index is not None:
+                logger.info(f"Split index {self.index} successfully.\n\tSaved to: {filename}.\n\tFrequencies: {self.spw}")
+                return
             else:
                 logger.info(f"Folder already exists at output: {filename}. Not including in list to be imaged.")
         logger.info(f"Split {len(self.out_files)} out of a total possible {(self.freq_range[1]-self.freq_range[0])//self.chan_width} channel splits.")
+        return
 
 def main():
     args = parse_args()
