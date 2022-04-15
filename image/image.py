@@ -45,8 +45,12 @@ def parse_args():
     parser.add_argument("--nspw", type=int, required=False, default=1, help="Denotes how many spw blocks the imaging is to be split into (default: 1).")
     parser.add_argument("--spwidx", type=int, required=False, default=0, help="Denotes which spw block this run is for (default: 0).")
 
+
     parser.add_argument("--RM", type=bool, required=False, default=False, help="NotImplmented: Produces Faraday spectra cubes (default: False).")
     parser.add_argument("--cellsize", type=float, default=1.5, required=False, help="Cell size paramter in arcsec (default: 1.0).")
+
+    parser.add_argument("-n", "--index", type=int, required=False, default=None, help="If provided splits a single channel range out for that given index, i.e. N=5 will split out the 5th channel as a seperate ms. (Default is to split the whole data set).")
+    parser.add_argument("-C", "--channelwidth", type=str, required=False, default="2.5078", help="Channel width to use for splitting. Default: 2.5078")
 
     parser.add_argument("-v", "--verbose", action="store_true", default=False, required=False, help="Verbose output.")
     parser.add_argument("-f", "--force", action="store_true", default=False, required=False, help="Forces overwrite of output (default: False).")
@@ -72,8 +76,17 @@ def main():
     LOCAL_NAS   = "/state/partition1/"
     TMP_DIR     = "tmp_bowles"
 
+
+
     #------------------------------- running clean -----------------------------
     args = parse_args()
+
+    # Find correct SPW if specified:
+    if args.index is not None:
+        freq_range = [880e6,1680e6] #MHz
+        start_freq = freq_range[0]+int(args.index)*float(args.channelwidth)*10**6
+        end_freq   = freq_range[0]+(int(args.index)+1)*float(args.channelwidth)*10**6
+        parameters['spw'] = f"*:{start_freq}~{end_freq}Hz"
 
     # For details see: https://casa.nrao.edu/docs/taskref/tclean-task.html
     # Using CLI to generate appropriate parameters
@@ -146,6 +159,8 @@ def main():
         parameters['stokes'] = stokes_
         # Generate unique image name
         parameters['imagename'] = f"{args.outpath}{args.vis.split('/')[-1]}_{parameters['specmode']}_{stokes_}_{args.robust}_{parameters['imsize'][0]}"
+        if args.index is not None:
+            parameters['imagename'] = parameters['imagename']+f"_{args.index}"
         if os.path.exists(parameters['imagename']) and not args.force:
             logger.error(f"An image already exists under this name, use --force to overwrite (received output path: {parameters['imagename']}).")
 
