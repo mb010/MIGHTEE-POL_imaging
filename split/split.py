@@ -69,18 +69,15 @@ class Split():
         else:
             counter = 0
         while (self.start_freq <= self.freq_range[1]):
-            counter+=1
-            self.start_freq = self.start_freq + self.chan_width*(counter-1)
-            self.stop_freq  = self.start_freq + self.chan_width*counter
-            self.spw = f"*:{self.start_freq}~{self.stop_freq}Hz" ### use self.index to calculate
+            self.start_freq = self.start_freq + (counter-1)*self.chan_width
+            self.stop_freq  = self.start_freq + (counter+2)*self.chan_width
+            self.spw = f"*:{int(self.start_freq)}~{int(self.stop_freq)}Hz" ### use self.index to calculate
+            print(f">>> self.spw: {self.spw}")
             # Decided on filename formatting. Index should be easier with slurm jobs
             #filename = f"{self.outdir}{self.filebase}.{self.spw}.ms"
             filename = f"{self.outdir}{self.filebase}_{counter}.ms"
 
             if ~os.path.isdir(filename) or self.force:
-                # MS -> MMS: Image each channel afterwards? Doesnt matter if bash - Didnt work. Splitting an MMS like that is uncontrolled.
-                # INDEX from sbatch call
-                # TAQL to access table and detect if the data is there? <- harder. xD
                 casatasks.split(
                     vis = self.vis,
                     outputvis=filename,
@@ -90,6 +87,7 @@ class Split():
                     datacolumn=self.datacolumn
                 )
                 self.out_files.append(f"{self.outdir}{filename}")
+            counter+=1
             if self.index is not None:
                 logger.info(f"Split index {self.index} successfully.\n\tSaved to: {filename}.\n\tFrequencies: {self.spw}")
                 return
@@ -100,6 +98,7 @@ class Split():
 
 def main():
     args = parse_args()
+    print(f"msmd: \n{msmd}")
 
     split = Split(
         vis=args.vis,
