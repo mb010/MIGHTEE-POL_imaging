@@ -60,33 +60,33 @@ def parse_args():
     return args
 
 def main():
+    args = parse_args()
     #--------------------------- edit these parameters -------------------------
     parameters = {
-        'threshold'   :'0.04mJy',
+        'threshold'   : 0.0001,
         'imsize'      : [6144, 6144],
+        'cell'        : '1.5arcsec',
         'wprojplanes' : 768,
-        'datacolumn'  : 'data', # Not 'corrected'?
+        'datacolumn'  : 'data',
         'gridder'     : 'wproject',
         'stokes'      : 'IQUV',
         'uvrange'     : '>0.25klambda',
         'phasecenter' : "",
         'reffreq'     : "",
+        'niter'       : 60000,
         'parallel'    : False
     }
     LOCAL_NAS   = "/state/partition1/"
     TMP_DIR     = "tmp_bowles"
 
-
-
     #------------------------------- running clean -----------------------------
-    args = parse_args()
-
     # Find correct SPW if specified:
     if args.index is not None:
         freq_range = [880e6,1680e6] #MHz
         start_freq = freq_range[0]+int(args.index)*float(args.channelwidth)*10**6
         end_freq   = freq_range[0]+(int(args.index)+1)*float(args.channelwidth)*10**6
-        parameters['spw'] = f"*:{start_freq}~{end_freq}Hz"
+        parameters['spw'] = "*:{start_freq}~{end_freq}Hz".format(start_freq=int(start_freq), end_freq=int(end_freq))
+        print(f">>> parameters['spw']: {parameters['spw']}")
 
     # For details see: https://casa.nrao.edu/docs/taskref/tclean-task.html
     # Using CLI to generate appropriate parameters
@@ -111,9 +111,9 @@ def main():
 
         # Produce usable values for CASA
         nchan = int(extent/args.nspw/args.spectral) # Calculate number of channels
-        print(f">>> TEST: start {start} extent/nspw {extent/args.nspw} nchan {nchan} end {start+nchan*args.spectral}")
-        start = f"{start}MHz"
-        width = f"{str(args.spectral)}MHz"
+        #print(f">>> TEST: start {start} extent/nspw {extent/args.nspw} nchan {nchan} end {start+nchan*args.spectral}".format(start=start, ))
+        start = "{start}MHz".format(start=start)
+        width = "{width}MHz".format(width=str(args.spectral))
         deconvolver = "multiscale"
     else:
         nchan = -1
@@ -144,12 +144,13 @@ def main():
         os.chdir(LOCAL_NAS)
         os.makedirs(TMP_DIR, exist_ok=True)
         os.chdir(TMP_DIR)
-        LOCAL_COPY = f"{args.vis.split('/')[-1]}"
+        LOCAL_COPY = str(args.vis.split('/')[-1])
         if os.path.exists(LOCAL_COPY):
-            logger.info(f"A local copy of the MS already exists at {LOCAL_NAS}{TMP_DIR}/{LOCAL_COPY} (likely due to a previous run failing).")
-        else:
-            logger.info(f"Copying data to {LOCAL_NAS}{TMP_DIR}/ under the name: {LOCAL_COPY}")
-            shutil.copytree(parameters['vis'], LOCAL_COPY)
+            logger.info("A local copy of the MS already exists at {LOCAL_NAS}{TMP_DIR}/{LOCAL_COPY} (likely due to a previous run failing).".format(LOCAL_NAS=LOCAL_NAS, TMP_DIR=TMP_DIR, LOCAL_COPY=LOCAL_COPY))
+            logger.info("Deleting local copy before copying over fresh version.")
+            shutil.rmtree(LOCAL_COPY)
+        logger.info("Copying data to {LOCAL_NAS}{TMP_DIR}/ under the name: {LOCAL_COPY}".format(LOCAL_NAS=LOCAL_NAS, TMP_DIR=TMP_DIR, LOCAL_COPY=LOCAL_COPY))
+        shutil.copytree(parameters['vis'], LOCAL_COPY)
         parameters['vis'] = LOCAL_COPY
     else:
         logger.warn("Not copying over files. This can cause a memory lock when multiple tasks are trying to access the same visibility set.")
@@ -158,20 +159,29 @@ def main():
     for stokes_ in stokes:
         parameters['stokes'] = stokes_
         # Generate unique image name
-        parameters['imagename'] = f"{args.outpath}{args.vis.split('/')[-1]}_{parameters['specmode']}_{stokes_}_{args.robust}_{parameters['imsize'][0]}"
+        #parameters['imagename'] = f"{args.outpath}{args.vis.split('/')[-1]}_{parameters['specmode']}_{stokes_}_{args.robust}_{parameters['imsize'][0]}"
+        parameters['imagename'] = "{outpath}{vis_name}_{specmode}_{stokes}_{robust}_{image_size}".format(
+            outpath=args.outpath,
+            vis_name=args.vis.split('/')[-1],
+            specmode=parameters['specmode'],
+            stokes=stokes_,
+            robust=args.robust,
+            image_size=parameters['imsize'][0]
+            )
         if args.index is not None:
-            parameters['imagename'] = parameters['imagename']+f"_{args.index}"
+            parameters['imagename'] = parameters['imagename']+"_"+str(args.index)
         if os.path.exists(parameters['imagename']) and not args.force:
-            logger.error(f"An image already exists under this name, use --force to overwrite (received output path: {parameters['imagename']}).")
+            logger.error("An image already exists under this name, use --force to overwrite (received output path: {outpath}).".format(outpath=parameters['imagename']))
 
-        logger.info(f">>> Starting image: {parameters['imagename']}")
+        logger.info(">>> Starting image: {image_name}".format(image_name=parameters['imagename']))
         tclean(**parameters)
 
     # Remove temporary folder
     if args.copy:
-        logger.info(f"Removing temporary data: {vis}")
+        logger.info("Removing temporary data: {vis}".format(vis=vis))
         os.chdir(local)
         shutil.rmtree(vis)
+    return
 
 if __name__=="__main__":
     main()
