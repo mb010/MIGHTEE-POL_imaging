@@ -8,19 +8,19 @@
 #SBATCH --mem=1500G
 #SBATCH --job-name=MergeSPW
 #SBATCH --time=1-00:00:00
-#SBATCH --output=./logs/%x.%j.out
-#SBATCH --error=./logs/%x.%j.err
+#SBATCH --output=logs/%x.%j.out
+#SBATCH --error=logs/%x.%j.err
 
 export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
 module load openmpi-2.1.1
 ulimit -n 16384
 
 # IO Lock
-IO_LOCK_FILE="/share/nas2/mbowles/nas2.lock"
-while [ -f "$IO_LOCK_FILE59" ]
+while [ -f "$IO_LOCK_FILE" ]
 do
   sleep 1m
 done
+# Activate file lock
 printf "VIS: ${VIS_TMP}\nChannel No.: ${SLURM_ARRAY_TASK_ID}\nRunning on ${SLURM_JOB_NODELIST}\n" >> $IO_LOCK_FILE
 printf "VIS: ${VIS_TMP}\nChannel No.: ${SLURM_ARRAY_TASK_ID}\nRunning on ${SLURM_JOB_NODELIST}\n"
 echo ">>> File lock check passed ${IO_LOCK_FILE} activated."
@@ -33,5 +33,6 @@ time singularity exec --bind /share,/state/partition1 $CONTAINER \
       --outdir=$OUTDIR
 echo ">>> Merge completed <<<"
 
+# Break file lock
 echo ">>> Breaking lock on ${IO_LOCK_FILE}"
 rm $IO_LOCK_FILE

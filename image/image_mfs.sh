@@ -6,45 +6,51 @@
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=16
 #SBATCH --mem=1500G
+#SBATCH --exclusive
 #SBATCH --job-name=ImageMFS
 #SBATCH --time=14-00:00:00
-#SBATCH --output=./logs/%x.%j.out
-#SBATCH --error=./logs/%x.%j.err
+#SBATCH --output=logs/%x.%j.out
+#SBATCH --error=logs/%x.%j.err
 #SBATCH --exclude=compute-0-8
 
 export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
 module load openmpi-2.1.1
 ulimit -n 16384
+
 VIS_TMP=$VIS
 ROBUST="$1"
 
-# IO Lock
-IO_LOCK_FILE="/share/nas2/mbowles/nas2.lock"
+# Check IO file lock
 while [ -f "$IO_LOCK_FILE" ]
 do
   sleep 1m
 done
+# Activate file lock
 printf "VIS: ${VIS_TMP}\nRunning on ${SLURM_JOB_NODELIST}\nLogs at: ${SLURM_JOB_NODELIST}\n" >> $IO_LOCK_FILE
 echo ">>> File lock check passed ${IO_LOCK_FILE} activated."
 
-# COPY DATA ONTO LOCAL SCRATCH DISK
-TMP_OUTDIR="${TMP_DIR}/$(basename ${VIS_TMP%.*ms})"
-echo ">>> ls of TMP_OUTDIR"
+# Copy data onto local scratch disk
+TMP_OUTDIR="${TMP_DIR}/${SLURM_JOB_ID}/"
+echo ">>> ls -lht TMP_OUTDIR ($TMP_OUTDIR)"
 ls -lht $TMP_OUTDIR
+echo ">>> du -sh TMP_OUTDIR ($TMP_OUTDIR)"
 du -sh $TMP_OUTDIR*
+echo ">>> rm -r TMP_OUTDIR ($TMP_OUTDIR)"
 rm -r $TMP_OUTDIR
+echo ">>> mkdir --parents TMP_OUTDIR ($TMP_OUTDIR)"
 mkdir --parents $TMP_OUTDIR
 pwd
 cd $TMP_OUTDIR
 pwd
 cp -r $VIS_TMP ./
-VIS_TMP="${TMP_OUTDIR}/$(basename ${VIS_TMP})"
+VIS_TMP="${TMP_OUTDIR}$(basename ${VIS_TMP})"
+TMP_IMAGE_DIR="${TMP_OUTDIR}/images/"
+mkdir --parents $TMP_OUTDIR
 
 # Break file Lock
 echo ">>> Breaking lock on ${IO_LOCK_FILE}"
 rm $IO_LOCK_FILE
 
-CONTAINER=/share/nas2/mbowles/dev/casa-6_v2.simg
 echo ">>> MFS Imaging Call. CPUS==${OMP_NUM_THREADS} on ${SLURM_JOB_NODELIST}<<<"
 echo ">>> Running on VIS=${VIS_TMP} with robust ${ROBUST}"
 time singularity exec --bind /share,/state/partition1 $CONTAINER \
@@ -52,13 +58,13 @@ time singularity exec --bind /share,/state/partition1 $CONTAINER \
       --polarisation \
       --robust=$ROBUST \
       --vis="$VIS_TMP" \
-      --outpath=$TMP_OUTDIR
+      --outpath="$TMP_OUTDIR"
 
-# COPYING DATA OUT
-echo ">>> Copying from local disk (${TMP_OUTDIR}) to NFS ("${OUTDIR}/mfs_${ROBUST}/")"
+# Copying data back to NAS for storage
+echo ">>> Copying from local disk (${TMP_OUTDIR}) to NAS ("${OUTDIR}/mfs_${ROBUST}/")"
 mkdir --parents "${OUTDIR}/mfs_${ROBUST}/"
-cp -r "${TMP_OUTDIR}"* "${OUTDIR}/mfs_${ROBUST}/"
-# CLEAN UP SCRATCH DISK
-echo ">>> Removing data from scratch <<<"
-cd ../
+cp -r "${TMP_IMAGE_DIR}"* "${OUTDIR}/mfs_${ROBUST}/"
+# Cleaning up scratch disk
+echo ">>> Removing data from scratch"
+cd $TMP_DIR
 rm -r $TMP_OUTDIR
