@@ -26,6 +26,7 @@ mkdir $OUTDIR
 IMG_MERGE=$(sbatch --export=ALL ./split/merge_spw.sh) # returns string containing job number.
 IMG_MERGE=${IMG_MERGE##* } # Finds last space and returns string after that space (i.e. the job number)
 
+sleep 1m
 # Imaging: MFS IQUV, 2 briggs weightings
 IMG_MFS_IQUV1=$(sbatch --export=ALL ./image/image_mfs.sh -0.5)
 IMG_MFS_IQUV1=${IMG_MFS_IQUV1##* }
