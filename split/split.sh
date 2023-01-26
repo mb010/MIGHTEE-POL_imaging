@@ -8,8 +8,8 @@
 #SBATCH --cpus-per-task=1
 #SBATCH --mem=250G
 #SBATCH --job-name=SplitData
-#SBATCH --output=./logs/%x.%j.out
-#SBATCH --error=./logs/%x.%j.err
+#SBATCH --output=logs/%x.%j.out
+#SBATCH --error=logs/%x.%j.err
 
 ulimit -n 16384
 

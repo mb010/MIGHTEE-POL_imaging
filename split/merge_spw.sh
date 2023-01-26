@@ -21,8 +21,8 @@ do
   sleep 1m
 done
 # Activate file lock
-printf "VIS: ${VIS_TMP}\nChannel No.: ${SLURM_ARRAY_TASK_ID}\nRunning on ${SLURM_JOB_NODELIST}\n" >> $IO_LOCK_FILE
-printf "VIS: ${VIS_TMP}\nChannel No.: ${SLURM_ARRAY_TASK_ID}\nRunning on ${SLURM_JOB_NODELIST}\n"
+printf "VIS: ${VIS}\nMerging to ${OUTDIR}\nRunning on ${SLURM_JOB_NODELIST}\n" >> $IO_LOCK_FILE
+printf "VIS: ${VIS}\nMerging to ${OUTDIR}\nRunning on ${SLURM_JOB_NODELIST}\n"
 echo ">>> File lock check passed ${IO_LOCK_FILE} activated."
 
 

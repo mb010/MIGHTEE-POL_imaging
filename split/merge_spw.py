@@ -28,7 +28,7 @@ def parse_args():
     )
 
     parser.add_argument("-M", "--vis", type=str, required=False, default="/share/nas2/mbowles/dev/processing/1538856059_sdp_l0.J0217-0449.mms", help="Measurement set to be imaged (default: '/share/nas/mbowles/dev/processing/1538856059_sdp_l0.J0217-0449.mms').")
-    parser.add_argument("-O", "--outdir", type=str, required=False, default="/share/nas2/mbowles/dev/processing/1538856059_sdp_l0.J0217-0449.mms", help="Measurement set to be imaged (default: '/share/nas/mbowles/dev/processing/).")
+    parser.add_argument("-O", "--outdir", type=str, required=False, default="/share/nas2/mbowles/dev/", help="Measurement set to be imaged (default: '/share/nas/mbowles/dev/processing/).")
     parser.add_argument("-v", "--verbose", action="store_true", default=False, required=False, help="Verbose output.")
     parser.add_argument("-f", "--force", action="store_true", default=False, required=False, help="Forces overwrite of output (default: False).")
     args, unknown = parser.parse_known_args()
@@ -46,17 +46,16 @@ class Merge():
         self.outdir = outdir
         self.filebase = self.vis.rstrip('.mms').split('/')[-1]
         self.force = force
-
-        # Will be changed as each split is made
-
         self.merge()
 
     def merge(self):
         filename = f"{self.outdir}{self.filebase}_merged.ms"
+        logger.info(f"Merging about to begin with vis={self.vis} and outputvis={filename}")
         casatasks.mstransform(
             vis = self.vis,
             outputvis=filename,
-            combinespws=True
+            combinespws=True,
+            separationaxis="scan"
         )
         logger.info(f"Merged SPW and saved to: {filename}")
         return
