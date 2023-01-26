@@ -19,8 +19,8 @@ export CHANNEL_WIDTH=2.5078
 export TMP_DIR=/state/partition1/tmp_bowles
 export IO_LOCK_FILE=/share/nas2/mbowles/nas2.lock
 
-export OUTDIR="/share/nas2/mbowles/images/$(basename ${VIS%.*ms})/"
-mkdir $OUTDIR
+export OUTDIR="/share/nas2/mbowles/images/$(basename ${VIS%.*ms})"
+mkdir --parents $OUTDIR
 
 # Merge SPW of data set to allow for easy channel slicing # This works, but takes >230min (~4hrs)
 IMG_MERGE=$(sbatch --export=ALL ./split/merge_spw.sh) # returns string containing job number.
@@ -28,19 +28,19 @@ IMG_MERGE=${IMG_MERGE##* } # Finds last space and returns string after that spac
 
 sleep 1m
 # Imaging: MFS IQUV, 2 briggs weightings
-IMG_MFS_IQUV1=$(sbatch --export=ALL ./image/image_mfs.sh -0.5)
-IMG_MFS_IQUV1=${IMG_MFS_IQUV1##* }
-sleep 3s
-IMG_MFS_IQUV2=$(sbatch --export=ALL ./image/image_mfs.sh 0.4)
-IMG_MFS_IQUV2=${IMG_MFS_IQUV2##* }
+# IMG_MFS_IQUV1=$(sbatch --export=ALL ./image/image_mfs.sh -0.5)
+# IMG_MFS_IQUV1=${IMG_MFS_IQUV1##* }
+# sleep 3s
+# IMG_MFS_IQUV2=$(sbatch --export=ALL ./image/image_mfs.sh 0.4)
+# IMG_MFS_IQUV2=${IMG_MFS_IQUV2##* }
 
 # Change VIS to merged VIS:
-export VIS="${OUTDIR}$(basename ${VIS%.*ms})_merged.ms"
-echo "VIS for channel imaging: ${VIS}"
+export VIS="${OUTDIR}/$(basename ${VIS%.*ms})_merged.ms"
+echo ">>> VIS for channel imaging: ${VIS}"
 sleep 3s
 # Imaging: Channelwise IQUV, 2 briggs weightings
 # Takes approx 5200m (~86h / ~3.5days)
-echo "Waiting for Merge to finish before launching channel imaging."
+echo ">>> Waiting for Merge to finish before launching channel imaging."
 IMG_CHAN_IQUV1=$(sbatch --dependency=afterany:$IMG_MERGE --export=ALL ./image/image_channels.sh -0.5 0.0)
 #IMG_CHAN_IQUV1=$(sbatch --export=ALL ./image/image_channels.sh -0.5 0.0)
 IMG_CHAN_IQUV1=${IMG_CHAN_IQUV##* }
