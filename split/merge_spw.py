@@ -55,7 +55,8 @@ class Merge():
             vis = self.vis,
             outputvis=filename,
             combinespws=True,
-            separationaxis="scan"
+            separationaxis="scan",
+            monolithic_processing=True
         )
         logger.info(f"Merged SPW and saved to: {filename}")
         return
