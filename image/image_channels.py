@@ -159,8 +159,8 @@ def main():
         parameters['stokes'] = stokes_
         # Generate unique image name
         #parameters['imagename'] = f"{args.outpath}{args.vis.split('/')[-1]}_{parameters['specmode']}_{stokes_}_{args.robust}_{parameters['imsize'][0]}"
-        parameters['imagename'] = "{outpath}{vis_name}_{specmode}_{stokes}_{robust}_{image_size}".format(
-            outpath=args.outpath,
+        parameters['imagename'] = "{outpath}/{vis_name}_{specmode}_{stokes}_{robust}_{image_size}".format(
+            outpath=args.outpath.rstrip('/'),
             vis_name=args.vis.split('/')[-1],
             specmode=parameters['specmode'],
             stokes=stokes_,

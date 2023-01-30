@@ -75,7 +75,7 @@ class Split():
             print(f">>> self.spw: {self.spw}")
             # Decided on filename formatting. Index should be easier with slurm jobs
             #filename = f"{self.outdir}{self.filebase}.{self.spw}.ms"
-            filename = f"{self.outdir}{self.filebase}_{counter}.ms"
+            filename = f"{self.outdir}/{self.filebase}_chan_{counter}.ms"
 
             if ~os.path.isdir(filename) or self.force:
                 casatasks.split(
@@ -86,7 +86,7 @@ class Split():
                     spw=self.spw,
                     datacolumn=self.datacolumn
                 )
-                self.out_files.append(f"{self.outdir}{filename}")
+                self.out_files.append(f"{self.outdir}/{filename}")
             counter+=1
             if self.index is not None:
                 logger.info(f"Split index {self.index} successfully.\n\tSaved to: {filename}.\n\tFrequencies: {self.spw}")

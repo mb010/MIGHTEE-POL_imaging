@@ -49,7 +49,7 @@ class Merge():
         self.merge()
 
     def merge(self):
-        filename = f"{self.outdir}{self.filebase}_merged.ms"
+        filename = f"{self.outdir.rstrip('/')}/{self.filebase}_merged.ms"
         logger.info(f"Merging about to begin with vis={self.vis} and outputvis={filename}")
         casatasks.mstransform(
             vis = self.vis,
