@@ -7,12 +7,12 @@ from time import gmtime
 from casatasks import tclean
 from casatools import msmetadata
 
-#import casampi
-#from mpi4casa.MPICommandClient import MPICommandClient
-#client = MPICommandClient()
-#client.set_log_mode('redirect')
-#client.start_services()
-#ret = client.push_command_request(command,block,target_server,parameters)
+# import casampi
+# from mpi4casa.MPICommandClient import MPICommandClient
+# client = MPICommandClient()
+# client.set_log_mode('redirect')
+# client.start_services()
+# ret = client.push_command_request(command,block,target_server,parameters)
 
 msmd = msmetadata()
 
