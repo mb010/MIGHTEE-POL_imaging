@@ -25,3 +25,5 @@ Science imaging on Manchester's Galahad HPC for MIGHTEE-POL.
         - Should verify that no residual data is present on various scratch disks.
 
 Warnings that the data is not being copied locally will appear. These can be ignored unless using the `image_mfs.py` and `image_channels.py` scripts independantly (in which case, they are still a warning and consider if your use case is appropriate).
+
+This is an example.
