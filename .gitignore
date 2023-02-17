@@ -1,8 +1,8 @@
 # Local Directories
 halo_imaging_scripts/
 logs/
-.gitignore
 ilifu_configs/
+
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
