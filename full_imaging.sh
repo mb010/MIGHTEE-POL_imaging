@@ -11,8 +11,8 @@
 #SBATCH --exclude=compute-0-8
 
 # Define variables used in this full imaging run.
-#export VIS=/share/nas2/mbowles/dev/testing/1538856059_sdp_l0.J0217-0449.mms #XMMLSS12
-export VIS=/share/nas2/MIGHTEE/calibration/cosmos/1587911796_sdp_l0/1587911796_sdp_l0.4k.J1000+0212.mms #COSMOS test
+export VIS="$1"
+# export VIS=/share/nas2/MIGHTEE/calibration/cosmos/1587911796_sdp_l0/1587911796_sdp_l0.4k.J1000+0212.mms #COSMOS test
 #export VIS=/share/nas2/mbowles/dev/1587911796_sdp_l0.4k.J1000+0212_merged.ms
 export CONTAINER=/share/nas2/mbowles/casa-6_v2.simg
 export CHANNEL_WIDTH=2.5078
@@ -22,11 +22,17 @@ export IO_LOCK_FILE=/share/nas2/mbowles/nas2.lock
 export OUTDIR="/share/nas2/mbowles/images/$(basename ${VIS%.*ms})"
 mkdir --parents $OUTDIR
 
-# Merge SPW of data set to allow for easy channel slicing # This works, but takes >230min (~4hrs)
-IMG_MERGE=$(sbatch --export=ALL ./split/merge_spw.sh) # returns string containing job number.
-IMG_MERGE=${IMG_MERGE##* } # Finds last space and returns string after that space (i.e. the job number)
+$YES="y"
+MERGE="${2:-$YES}"
 
-sleep 1m
+if [$MERGE==$YES]
+then
+    # Merge SPW of data set to allow for easy channel slicing # This works, but takes >230min (~4hrs)
+    IMG_MERGE=$(sbatch --export=ALL ./split/merge_spw.sh) # returns string containing job number.
+    IMG_MERGE=${IMG_MERGE##* } # Finds last space and returns string after that space (i.e. the job number)
+    sleep 1m
+fi
+
 # Imaging: MFS IQUV, 2 briggs weightings
 IMG_MFS_IQUV1=$(sbatch --export=ALL ./image/image_mfs.sh -0.5)
 IMG_MFS_IQUV1=${IMG_MFS_IQUV1##* }
