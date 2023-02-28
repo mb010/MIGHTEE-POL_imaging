@@ -21,8 +21,9 @@ export IO_LOCK_FILE=/share/nas2/mbowles/nas2.lock
 export OUTDIR="/share/nas2/mbowles/images/$(basename ${VIS%.*ms})"
 mkdir --parents $OUTDIR
 
-$YES="y"
-MERGE="${2:-$YES}"
+YES="yes"
+MERGE=$2
+MERGE=${2:-yes}
 
 echo "Starting time:"
 echo $(date + %c)
