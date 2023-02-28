@@ -24,6 +24,9 @@ mkdir --parents $OUTDIR
 $YES="y"
 MERGE="${2:-$YES}"
 
+echo "Starting time:"
+echo $(date + %c)
+
 if [$MERGE==$YES]
 then
     # Merge SPW of data set to allow for easy channel slicing # This works, but takes >230min (~4hrs)
@@ -65,3 +68,6 @@ fi
 # Cleanup
 # Remove merged VIS during cleanup
 #sbatch --dependency=afterany:$CONCAT_ID1:$CONCAT_ID2 ./cleanup/cleanup.sh
+
+echo "Finishing time:"
+echo $(date + %c)

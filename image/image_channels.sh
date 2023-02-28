@@ -69,3 +69,6 @@ cp -r "${TMP_IMAGE_DIR}/"* "${OUTDIR}/chan_imgs/${SLURM_ARRAY_TASK_ID}/"
 echo ">>> Removing data from scratch
 cd $TMP_DIR
 rm -r $TMP_OUTDIR
+
+echo "Finishing time:"
+echo $(date + %c)
