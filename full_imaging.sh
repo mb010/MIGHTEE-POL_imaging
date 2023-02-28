@@ -6,7 +6,7 @@
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=1
 #SBATCH --job-name=FullImaging
-#SBATCH --output=logs/%j%x.out
+#SBATCH --output=logs/%j.%x.out
 #SBATCH --error=logs/%j.%x.err
 
 # Define variables used in this full imaging run.
