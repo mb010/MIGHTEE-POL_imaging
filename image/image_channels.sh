@@ -18,16 +18,11 @@ export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
 module load openmpi-2.1.1
 ulimit -n 16384
 
-# Check IO file lock
-while [ -f "$IO_LOCK_FILE" ]
-do
-  sleep 1m
-done
+
+echo "Start time:"
+echo $(date + %c)
 
 MS_NAME=$(basename $VIS)
-#IMAGE_LIST="${OUTDIR}${MS_NAME%.*ms}_*.ms" # will be useful for concatenation
-#PATH_LIST="${OUTDIR}${FILE_NAME%.*ms}_split.txt"
-#CHANNEL=$(awk "NR==${SLURM_ARRAY_TASK_ID+1}" $PATH_LIST)
 
 # SPLIT DATA ONTO LOCAL SCRATCH DISK
 TMP_OUTDIR="${TMP_DIR}/${SLURM_JOB_ID}_${SLURM_ARRAY_TASK_ID}"
