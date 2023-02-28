@@ -45,9 +45,18 @@ echo ">>> VIS for channel imaging: ${VIS}"
 sleep 3s
 # Imaging: Channelwise IQUV, 2 briggs weightings
 # Takes approx 5200m (~86h / ~3.5days)
-echo ">>> Waiting for Merge to finish before launching channel imaging."
-IMG_CHAN_IQUV1=$(sbatch --dependency=afterany:$IMG_MERGE --export=ALL ./image/image_channels.sh 0.0)
-IMG_CHAN_IQUV1=${IMG_CHAN_IQUV##* }
+if [$MERGE==$YES]
+then
+    echo ">>> Waiting for Merge to finish before launching channel imaging."
+    echo $(date + %c)
+    IMG_CHAN_IQUV1=$(sbatch --dependency=afterany:$IMG_MERGE --export=ALL ./image/image_channels.sh 0.0)
+    IMG_CHAN_IQUV1=${IMG_CHAN_IQUV##* }
+else
+    echo ">>> Launching channel imaging."
+    echo $(date + %c)
+    IMG_CHAN_IQUV1=$(sbatch --export=ALL ./image/image_channels.sh 0.0)
+    IMG_CHAN_IQUV1=${IMG_CHAN_IQUV##* }
+fi
 
 # Concatenate images: 2 briggs weightings
 #CONCAT_ID1=$(sbatch --dependency=afterany:$IMG_MFS_IQUV2:$IMG_CHAN_IQUV2 ./concat/concat.sh -0.5)
