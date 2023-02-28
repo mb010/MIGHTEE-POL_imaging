@@ -28,8 +28,7 @@ MERGE=${2:-yes}
 echo "Starting time:"
 echo $(date + %c)
 
-if [$MERGE==$YES]
-then
+if [ "$MERGE" == "$YES" ]; then
     # Merge SPW of data set to allow for easy channel slicing # This works, but takes >230min (~4hrs)
     IMG_MERGE=$(sbatch --export=ALL ./split/merge_spw.sh) # returns string containing job number.
     IMG_MERGE=${IMG_MERGE##* } # Finds last space and returns string after that space (i.e. the job number)
@@ -49,8 +48,7 @@ echo ">>> VIS for channel imaging: ${VIS}"
 sleep 3s
 # Imaging: Channelwise IQUV, 2 briggs weightings
 # Takes approx 5200m (~86h / ~3.5days)
-if [$MERGE==$YES]
-then
+if [ "$MERGE" == "$YES" ]; then
     echo ">>> Waiting for Merge to finish before launching channel imaging."
     echo $(date + %c)
     IMG_CHAN_IQUV1=$(sbatch --dependency=afterany:$IMG_MERGE --export=ALL ./image/image_channels.sh 0.0)
