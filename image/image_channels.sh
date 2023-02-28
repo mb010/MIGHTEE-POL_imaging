@@ -9,8 +9,8 @@
 #SBATCH --job-name=ImageChannel
 #SBATCH --time=5-00:00:00
 #SBATCH --array=0-319%64
-#SBATCH --output=logs/%x.%A_%a.out
-#SBATCH --error=logs/%x.%A_%a.err
+#SBATCH --output=logs/%A_%a.%x.out
+#SBATCH --error=logs/%A_%a.%x.err
 
 sleep ${SLURM_ARRAY_TASK_ID}s
 

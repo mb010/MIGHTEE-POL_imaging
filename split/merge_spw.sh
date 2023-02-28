@@ -8,12 +8,15 @@
 #SBATCH --mem=1500G
 #SBATCH --job-name=MergeSPW
 #SBATCH --time=1-00:00:00
-#SBATCH --output=logs/%x.%j.out
-#SBATCH --error=logs/%x.%j.err
+#SBATCH --output=logs/%j.%x.out
+#SBATCH --error=logs/%j.%x.err
 
 export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
 module load openmpi-2.1.1
 ulimit -n 16384
+
+echo "Start time:"
+echo $(date + %c)
 
 # IO Lock
 while [ -f "$IO_LOCK_FILE" ]

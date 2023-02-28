@@ -1,14 +1,13 @@
 #!/bin/bash
 
-#SBATCH --time=01:00:00
+#SBATCH --time=1-00:00:00
 #SBATCH --mail-user=micah.bowles@postgrad.manchester.ac.uk
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=1
 #SBATCH --job-name=FullImaging
-#SBATCH --output=logs/%x.%j.out
-#SBATCH --error=logs/%x.%j.err
-#SBATCH --exclude=compute-0-8
+#SBATCH --output=logs/%j%x.out
+#SBATCH --error=logs/%j.%x.err
 
 # Define variables used in this full imaging run.
 export VIS="$1"
