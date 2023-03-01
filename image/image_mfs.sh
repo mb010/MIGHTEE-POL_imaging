@@ -28,7 +28,7 @@ do
   sleep 1m
 done
 # Activate file lock
-printf "VIS: ${VIS_TMP}\nRunning on ${SLURM_JOB_NODELIST}\nLogs at: ${SLURM_JOB_NODELIST}\n" >> $IO_LOCK_FILE
+printf "image_mfs.sh has the file lock.\nVIS: ${VIS_TMP}\nRunning on ${SLURM_JOB_NODELIST}\nLogs at: ${SLURM_JOB_NODELIST}\n" >> $IO_LOCK_FILE
 echo ">>> File lock check passed ${IO_LOCK_FILE} activated."
 echo $(date + %F;%H:%M:%S)
 
