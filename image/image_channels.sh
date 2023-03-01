@@ -20,7 +20,7 @@ ulimit -n 16384
 
 
 echo "Start time:"
-echo $(date + %F;%H:%M:%S)
+date +'%Y-%m-%d %H:%M:%S'
 
 MS_NAME=$(basename $VIS)
 
@@ -71,4 +71,4 @@ cd $TMP_DIR
 rm -r $TMP_OUTDIR
 
 echo "Finishing time:"
-echo $(date + %F;%H:%M:%S)
+date +'%Y-%m-%d %H:%M:%S'

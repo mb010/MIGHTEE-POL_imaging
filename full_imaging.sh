@@ -26,7 +26,7 @@ MERGE=$2
 MERGE=${2:-yes}
 
 echo "Starting time:"
-echo $(date + %F;%H:%M:%S)
+date +'%Y-%m-%d %H:%M:%S'
 
 if [ "$MERGE" == "$YES" ]; then
     # Merge SPW of data set to allow for easy channel slicing # This works, but takes >230min (~4hrs)
@@ -50,12 +50,12 @@ sleep 3s
 # Takes approx 5200m (~86h / ~3.5days)
 if [ "$MERGE" == "$YES" ]; then
     echo ">>> Waiting for Merge to finish before launching channel imaging."
-    echo $(date + %F;%H:%M:%S)
+    echo $(date + %Y-%m-%d %H:%M:%S)
     IMG_CHAN_IQUV1=$(sbatch --dependency=afterany:$IMG_MERGE --export=ALL ./image/image_channels.sh 0.0)
     IMG_CHAN_IQUV1=${IMG_CHAN_IQUV##* }
 else
     echo ">>> Launching channel imaging."
-    echo $(date + %F;%H:%M:%S)
+    echo $(date + %Y-%m-%d %H:%M:%S)
     IMG_CHAN_IQUV1=$(sbatch --export=ALL ./image/image_channels.sh 0.0)
     IMG_CHAN_IQUV1=${IMG_CHAN_IQUV##* }
 fi
@@ -69,4 +69,4 @@ fi
 #sbatch --dependency=afterany:$CONCAT_ID1:$CONCAT_ID2 ./cleanup/cleanup.sh
 
 echo "Finishing time:"
-echo $(date + %F;%H:%M:%S)
+date +'%Y-%m-%d %H:%M:%S'

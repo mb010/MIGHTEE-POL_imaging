@@ -16,7 +16,7 @@ module load openmpi-2.1.1
 ulimit -n 16384
 
 echo "Start time:"
-echo $(date + %F;%H:%M:%S)
+date +'%Y-%m-%d %H:%M:%S'
 
 # IO Lock
 while [ -f "$IO_LOCK_FILE" ]
@@ -27,7 +27,7 @@ done
 printf "merge_spw.sh has the file lock.\nVIS: ${VIS}\nMerging to ${OUTDIR}/$(basename ${VIS%.*ms})_merged.ms\nRunning on ${SLURM_JOB_NODELIST}\n" >> $IO_LOCK_FILE
 printf "VIS: ${VIS}\nMerging to ${OUTDIR}/$(basename ${VIS%.*ms})_merged.ms\nRunning on ${SLURM_JOB_NODELIST}\n"
 echo ">>> File lock check passed ${IO_LOCK_FILE} activated."
-echo $(date + %F;%H:%M:%S)
+date +'%Y-%m-%d %H:%M:%S'
 
 
 
@@ -40,8 +40,8 @@ echo ">>> Merge completed <<<"
 
 # Break file lock
 echo ">>> Breaking lock on ${IO_LOCK_FILE}"
-echo $(date + %F;%H:%M:%S)
+date +'%Y-%m-%d %H:%M:%S'
 rm $IO_LOCK_FILE
 
 echo "Finishing time:"
-echo $(date + %F;%H:%M:%S)
+date +'%Y-%m-%d %H:%M:%S'

@@ -20,7 +20,7 @@ VIS_TMP=$VIS
 ROBUST="$1"
 
 echo "Start time:"
-echo $(date + %F;%H:%M:%S)
+date +'%Y-%m-%d %H:%M:%S'
 
 # Check IO file lock
 while [ -f "$IO_LOCK_FILE" ]
@@ -30,7 +30,7 @@ done
 # Activate file lock
 printf "image_mfs.sh has the file lock.\nVIS: ${VIS_TMP}\nRunning on ${SLURM_JOB_NODELIST}\nLogs at: ${SLURM_JOB_NODELIST}\n" >> $IO_LOCK_FILE
 echo ">>> File lock check passed ${IO_LOCK_FILE} activated."
-echo $(date + %F;%H:%M:%S)
+date +'%Y-%m-%d %H:%M:%S'
 
 # Copy data onto local scratch disk
 TMP_OUTDIR="${TMP_DIR}/${SLURM_JOB_ID}"
@@ -52,7 +52,7 @@ mkdir --parents $TMP_IMAGE_DIR
 
 # Break file Lock
 echo ">>> Breaking lock on ${IO_LOCK_FILE}"
-echo $(date + %F;%H:%M:%S)
+date +'%Y-%m-%d %H:%M:%S'
 rm $IO_LOCK_FILE
 
 echo ">>> MFS Imaging Call. CPUS==${OMP_NUM_THREADS} on ${SLURM_JOB_NODELIST}<<<"
@@ -74,4 +74,4 @@ cd $TMP_DIR
 rm -r $TMP_OUTDIR
 
 echo "Finishing time:"
-echo $(date + %F;%H:%M:%S)
+date +'%Y-%m-%d %H:%M:%S'
