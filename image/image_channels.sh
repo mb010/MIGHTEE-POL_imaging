@@ -11,7 +11,7 @@
 #SBATCH --array=0-221%32
 #SBATCH --output=logs/%A_%a.%x.out
 #SBATCH --error=logs/%A_%a.%x.err
-#SBATCH --exclude=compute-0-1,compute-0-2
+#SBATCH --exclude=compute-0-1,compute-0-2,compute-0-30
 
 sleep ${SLURM_ARRAY_TASK_ID}s
 
