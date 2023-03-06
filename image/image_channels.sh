@@ -4,7 +4,7 @@
 #SBATCH --mail-user=micah.bowles@postgrad.manchester.ac.uk
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
-#SBATCH --cpus-per-task=12
+#SBATCH --cpus-per-task=13
 #SBATCH --mem=32G
 #SBATCH --job-name=ImgChan
 #SBATCH --time=5-00:00:00
