@@ -6,9 +6,9 @@
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=12
 #SBATCH --mem=32G
-#SBATCH --job-name=ImageChannel
+#SBATCH --job-name=ImgChan
 #SBATCH --time=5-00:00:00
-#SBATCH --array=0-319%64
+#SBATCH --array=0-221%32
 #SBATCH --output=logs/%A_%a.%x.out
 #SBATCH --error=logs/%A_%a.%x.err
 #SBATCH --exclude=compute-0-1,compute-0-2
@@ -26,7 +26,7 @@ date +'%Y-%m-%d %H:%M:%S'
 MS_NAME=$(basename $VIS)
 
 # SPLIT DATA ONTO LOCAL SCRATCH DISK
-TMP_OUTDIR="${TMP_DIR}/${SLURM_JOB_ID}_${SLURM_ARRAY_TASK_ID}"
+TMP_OUTDIR="${TMP_DIR}/${SLURM_ARRAY_JOB_ID}_${SLURM_ARRAY_TASK_ID}"
 echo ">>> ls -lht TMP_OUTDIR ($TMP_OUTDIR)"
 ls -lht $TMP_OUTDIR
 echo ">>> du -sh TMP_OUTDIR ($TMP_OUTDIR)"

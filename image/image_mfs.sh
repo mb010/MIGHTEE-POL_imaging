@@ -7,7 +7,7 @@
 #SBATCH --cpus-per-task=16
 #SBATCH --mem=1500G
 #SBATCH --exclusive
-#SBATCH --job-name=ImageMFS
+#SBATCH --job-name=ImgMFS
 #SBATCH --time=14-00:00:00
 #SBATCH --output=logs/%j.%x.out
 #SBATCH --error=logs/%j.%x.err
