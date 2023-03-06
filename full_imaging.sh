@@ -36,11 +36,11 @@ if [ "$MERGE" == "$YES" ]; then
 fi
 
 # Imaging: MFS IQUV, 2 briggs weightings
-IMG_MFS_IQUV1=$(sbatch --export=ALL ./image/image_mfs.sh -0.5)
-IMG_MFS_IQUV1=${IMG_MFS_IQUV1##* }
-sleep 3s
-IMG_MFS_IQUV2=$(sbatch --export=ALL ./image/image_mfs.sh 0.4)
-IMG_MFS_IQUV2=${IMG_MFS_IQUV2##* }
+# IMG_MFS_IQUV1=$(sbatch --export=ALL ./image/image_mfs.sh -0.5)
+# IMG_MFS_IQUV1=${IMG_MFS_IQUV1##* }
+# sleep 3s
+# IMG_MFS_IQUV2=$(sbatch --export=ALL ./image/image_mfs.sh 0.4)
+# IMG_MFS_IQUV2=${IMG_MFS_IQUV2##* }
 
 # Change VIS to merged VIS:
 export VIS="${OUTDIR}/$(basename ${VIS%.*ms})_merged.ms"
