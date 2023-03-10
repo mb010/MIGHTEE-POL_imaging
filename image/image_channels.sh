@@ -8,7 +8,7 @@
 #SBATCH --mem=32G
 #SBATCH --job-name=ImgChan
 #SBATCH --time=5-00:00:00
-#SBATCH --array=0-221%32
+#SBATCH --array=0-221
 #SBATCH --output=logs/%A_%a.%x.out
 #SBATCH --error=logs/%A_%a.%x.err
 #SBATCH --exclude=compute-0-1,compute-0-2,compute-0-30
