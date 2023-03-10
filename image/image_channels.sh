@@ -22,6 +22,8 @@ ulimit -n 16384
 
 echo "Start time:"
 date +'%Y-%m-%d %H:%M:%S'
+DATE_START=`date +%s`
+
 
 MS_NAME=$(basename $VIS)
 
@@ -33,7 +35,7 @@ TMP_OUTDIR="${TMP_DIR}/${SLURM_ARRAY_JOB_ID}_${S LURM_ARRAY_TASK_ID}"
 echo ">>> ls -lht TMP_OUTDIR ($TMP_OUTDIR)"
 ls -lht $TMP_OUTDIR
 echo ">>> du -sh TMP_OUTDIR ($TMP_OUTDIR)"
-du -sh "${TMP_OUTDIR}/"*
+du -sh ${TMP_OUTDIR}/*
 echo ">>> rm -r TMP_OUTDIR ($TMP_OUTDIR)"
 rm -r $TMP_OUTDIR
 echo ">>> mkdir --parents TMP_OUTDIR ($TMP_OUTDIR)"
@@ -62,8 +64,8 @@ time singularity exec --bind /share,/state/partition1 $CONTAINER \
   python /share/nas2/mbowles/MIGHTEE-POL_imaging/image/image_channels.py \
       --polarisation \
       --robust=$ROBUST \
-      --vis="$SPLIT_VIS" \
-      --outpath="$TMP_IMAGE_DIR"
+      --vis=$SPLIT_VIS \
+      --outpath=$TMP_IMAGE_DIR
 
 # COPYING DATA OUT
 echo ">>> Copying from local disk (${TMP_IMAGE_DIR}/*) to NAS (${OUTDIR}/chan_imgs/${SLURM_ARRAY_TASK_ID}/)"
@@ -76,3 +78,11 @@ rm -r $TMP_OUTDIR
 
 echo "Finishing time:"
 date +'%Y-%m-%d %H:%M:%S'
+
+DATE_END=`date +%s`
+SECONDS=$((DATE_END-DATE_START))
+MINUTES=$((SECONDS/60))
+SECONDS=$((SECONDS-60*MINUTES))
+HOURS=$((MINUTES/60))
+MINUTES=$((MINUTES-60*hours))
+echo Total run time : $HOURS Hours $MINUTES Minutes $SECONDS Seconds
