@@ -29,7 +29,7 @@ MS_NAME=$(basename $VIS)
 rm -rf $TMP_DIR
 
 # SPLIT DATA ONTO LOCAL SCRATCH DISK
-TMP_OUTDIR="${TMP_DIR}/${SLURM_ARRAY_JOB_ID}_${SLURM_ARRAY_TASK_ID}"
+TMP_OUTDIR="${TMP_DIR}/${SLURM_ARRAY_JOB_ID}_${S LURM_ARRAY_TASK_ID}"
 echo ">>> ls -lht TMP_OUTDIR ($TMP_OUTDIR)"
 ls -lht $TMP_OUTDIR
 echo ">>> du -sh TMP_OUTDIR ($TMP_OUTDIR)"
@@ -66,9 +66,9 @@ time singularity exec --bind /share,/state/partition1 $CONTAINER \
       --outpath="$TMP_IMAGE_DIR"
 
 # COPYING DATA OUT
-echo ">>> Copying from local disk (${TMP_OUTDIR}/*) to NAS (${OUTDIR}/chan_${SLURM_ARRAY_TASK_ID}/)"
-mkdir --parents "${OUTDIR}/chan_images/${SLURM_ARRAY_TASK_ID}"
-cp -r "${TMP_IMAGE_DIR}/"* "${OUTDIR}/chan_imgs/${SLURM_ARRAY_TASK_ID}/"
+echo ">>> Copying from local disk (${TMP_IMAGE_DIR}/*) to NAS (${OUTDIR}/chan_imgs/${SLURM_ARRAY_TASK_ID}/)"
+mkdir --parents $OUTDIR/chan_images/$SLURM_ARRAY_TASK_ID/
+cp -r $TMP_IMAGE_DIR/* $OUTDIR/chan_imgs/$SLURM_ARRAY_TASK_ID/
 # CLEAN UP SCRATCH DISK
 echo ">>> Removing data from scratch
 cd $TMP_DIR
