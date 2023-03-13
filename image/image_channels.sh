@@ -31,11 +31,11 @@ MS_NAME=$(basename $VIS)
 rm -rf $TMP_DIR
 
 # SPLIT DATA ONTO LOCAL SCRATCH DISK
-TMP_OUTDIR="${TMP_DIR}/${SLURM_ARRAY_JOB_ID}_${S LURM_ARRAY_TASK_ID}"
+TMP_OUTDIR="${TMP_DIR}/${SLURM_ARRAY_JOB_ID}_${SLURM_ARRAY_TASK_ID}"
 echo ">>> ls -lht TMP_OUTDIR ($TMP_OUTDIR)"
 ls -lht $TMP_OUTDIR
-echo ">>> du -sh TMP_OUTDIR ($TMP_OUTDIR)"
-du -sh ${TMP_OUTDIR}/*
+# echo ">>> du -sh TMP_OUTDIR ($TMP_OUTDIR)"
+# du -sh ${TMP_OUTDIR}/*
 echo ">>> rm -r TMP_OUTDIR ($TMP_OUTDIR)"
 rm -r $TMP_OUTDIR
 echo ">>> mkdir --parents TMP_OUTDIR ($TMP_OUTDIR)"
