@@ -162,7 +162,7 @@ def main():
     args = parse_args()
     # --------------------------- edit these parameters -------------------------
     parameters = {
-        "threshold": 0.0001,
+        "threshold": 1,
         "imsize": [6144, 6144],
         "cell": "1.5arcsec",
         "wprojplanes": 768,
