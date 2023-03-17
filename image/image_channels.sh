@@ -8,13 +8,14 @@
 #SBATCH --mem=50G
 #SBATCH --job-name=ImgChan
 #SBATCH --time=5-00:00:00
-#SBATCH --array=0-221
+#SBATCH --array=0-5
 #SBATCH --output=logs/%A_%a.%x.out
 #SBATCH --error=logs/%A_%a.%x.err
 #SBATCH --exclude=compute-0-1,compute-0-2,compute-0-30
 
 sleep ${SLURM_ARRAY_TASK_ID}s
 
+# array tasks should be #SBATCH --array=0-221 when actually being used.
 export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
 module load openmpi-2.1.1
 ulimit -n 16384
