@@ -39,15 +39,15 @@ echo ">>> ls -lht TMP_OUTDIR ($TMP_OUTDIR)"
 ls -lht $TMP_OUTDIR
 echo ">>> rm -r TMP_OUTDIR ($TMP_OUTDIR)"
 rm -r $TMP_OUTDIR
-echo ">>> mkdir --parents TMP_OUTDIR ($TMP_OUTDIR)"
-mkdir --parents $TMP_OUTDIR
+echo ">>> mkdir -p TMP_OUTDIR ($TMP_OUTDIR)"
+mkdir -p $TMP_OUTDIR
 pwd
 cd $TMP_OUTDIR
 pwd
 cp -r $VIS_TMP ${TMP_OUTDIR}/
 VIS_TMP="${TMP_OUTDIR}/$(basename ${VIS_TMP})"
 TMP_IMAGE_DIR="${TMP_OUTDIR}/images"
-mkdir --parents $TMP_IMAGE_DIR
+mkdir -p $TMP_IMAGE_DIR
 
 # Break file Lock
 echo ">>> Breaking lock on ${IO_LOCK_FILE}"
@@ -65,7 +65,7 @@ time singularity exec --bind /share,/state/partition1 $CONTAINER \
 
 # Copying data back to NAS for storage
 echo ">>> Copying from local disk (${TMP_OUTDIR}) to NAS (${OUTDIR}/mfs_${ROBUST}/)"
-mkdir --parents "${OUTDIR}/mfs_${ROBUST}"
+mkdir -p "${OUTDIR}/mfs_${ROBUST}"
 cp -r ${TMP_IMAGE_DIR}/* ${OUTDIR}/mfs_${ROBUST}/
 # Cleaning up scratch disk
 echo ">>> Removing data from scratch"
