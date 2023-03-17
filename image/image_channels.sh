@@ -62,7 +62,7 @@ mkdir -p $TMP_IMAGE_DIR
 ROBUST="$1"
 echo ">>> Imaging Call of a Channel ${SLURM_ARRAY_TASK_ID} robust ${ROBUST}. Running on ${SLURM_JOB_NODELIST} <<<"
 time singularity exec --bind /share,/state/partition1 $CONTAINER \
-  python /share/nas2/mbowles/MIGHTEE-POL_imaging/image/image_channels.py \
+  mpirun --mca oob tcp python /share/nas2/mbowles/MIGHTEE-POL_imaging/image/image_channels.py \
       --polarisation \
       --robust=$ROBUST \
       --vis=$SPLIT_VIS \
