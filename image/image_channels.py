@@ -162,7 +162,7 @@ def main():
     args = parse_args()
     # --------------------------- edit these parameters -------------------------
     parameters = {
-        "threshold": 1,
+        "threshold": 0.0001,
         "imsize": [6144, 6144],
         "cell": "1.5arcsec",
         "wprojplanes": 768,
@@ -172,8 +172,8 @@ def main():
         "uvrange": ">0.25klambda",
         "phasecenter": "",
         "reffreq": "",
-        "niter": 60000,
-        "parallel": False,
+        "niter": 1,  # will be 60000
+        "parallel": True,
     }
     LOCAL_NAS = "/state/partition1/"
     TMP_DIR = "tmp_bowles"
