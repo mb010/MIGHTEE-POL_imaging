@@ -16,9 +16,9 @@
 sleep ${SLURM_ARRAY_TASK_ID}s
 
 # array tasks should be #SBATCH --array=0-221 when actually being used.
-export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
 module load openmpi-2.1.1
 ulimit -n 16384
+export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
 
 
 echo "Start time:"
@@ -61,7 +61,8 @@ mkdir -p $TMP_IMAGE_DIR
 # IMAGE FOR EACH ROBUST PARAMETER
 ROBUST="$1"
 echo ">>> Imaging Call of a Channel ${SLURM_ARRAY_TASK_ID} robust ${ROBUST}. Running on ${SLURM_JOB_NODELIST} <<<"
-time mpirun --mca oob tcp singularity exec --bind /share,/state/partition1 $CONTAINER \
+# time mpirun --mca oob tcp singularity exec --bind /share,/state/partition1 $CONTAINER \
+time singularity exec --bind /share,/state/partition1 $CONTAINER \
   python /share/nas2/mbowles/MIGHTEE-POL_imaging/image/image_channels.py \
       --polarisation \
       --robust=$ROBUST \
