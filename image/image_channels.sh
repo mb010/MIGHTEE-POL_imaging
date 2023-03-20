@@ -47,7 +47,7 @@ pwd
 
 echo ">>> Splitting out Channel ${SLURM_ARRAY_TASK_ID}. Running on ${SLURM_JOB_NODELIST} <<<"
 time singularity exec --bind /share,/state/partition1 $CONTAINER \
-  python /share/nas2/mbowles/MIGHTEE-POL_imaging/split/split.py \
+  mpirun --mca oob tcp python /share/nas2/mbowles/MIGHTEE-POL_imaging/split/split.py \
     --vis="$VIS" \
     --channelwidth=$CHANNEL_WIDTH \
     --outdir=$TMP_OUTDIR \
