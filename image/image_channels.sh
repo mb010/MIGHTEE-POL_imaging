@@ -5,10 +5,10 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=24
-#SBATCH --mem=50G
+#SBATCH --mem=60G
 #SBATCH --job-name=MPIImgChan
 #SBATCH --time=5-00:00:00
-#SBATCH --array=0-5
+#SBATCH --array=6-10
 #SBATCH --output=logs/%A_%a.%x.out
 #SBATCH --error=logs/%A_%a.%x.err
 #SBATCH --exclude=compute-0-1,compute-0-2,compute-0-30
