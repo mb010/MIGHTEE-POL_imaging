@@ -174,7 +174,7 @@ def main():
         "phasecenter": "",
         "reffreq": "",
         "niter": 1,  # will be 60000
-        "parallel": False,
+        "parallel": True,
     }
     LOCAL_NAS = "/state/partition1/"
     TMP_DIR = "tmp_bowles"
