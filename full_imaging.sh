@@ -18,7 +18,7 @@ export CHANNEL_WIDTH=2.5078
 export TMP_DIR=/state/partition1/tmp_bowles
 export IO_LOCK_FILE=/share/nas2/mbowles/nas2.lock
 
-export OUTDIR="/share/nas2/mbowles/images/$(basename ${VIS%.*ms})"
+export OUTDIR="/share/nas2_5/MIGHTEE/images/$(basename ${VIS%.*ms})"
 mkdir -p $OUTDIR
 
 YES="yes"
