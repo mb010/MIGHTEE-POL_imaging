@@ -66,11 +66,8 @@ time singularity exec --bind /share,/state/partition1 $CONTAINER \
 # Copying data back to NAS for storage
 echo ">>> Copying from local disk (${TMP_OUTDIR}) to NAS (${OUTDIR}/mfs_${ROBUST}/)"
 mkdir -p "${OUTDIR}/mfs_${ROBUST}"
-cp -r ${TMP_IMAGE_DIR}/* ${OUTDIR}/mfs_${ROBUST}/
+cp -r ${TMP_IMAGE_DIR} ${OUTDIR}/mfs_${ROBUST}/
 # Cleaning up scratch disk
-echo ">>> Removing data from scratch"
-cd $TMP_DIR
-rm -r $TMP_OUTDIR
 
 echo "Finishing time:"
 date +'%Y-%m-%d %H:%M:%S'
