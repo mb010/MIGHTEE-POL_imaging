@@ -70,9 +70,10 @@ time singularity exec --bind /share,/state/partition1 $CONTAINER \
       --outpath=$TMP_IMAGE_DIR
 
 # COPYING DATA OUT
-echo ">>> Copying from local disk (${TMP_IMAGE_DIR}) to NAS (${OUTDIR}/chan_imgs/${SLURM_ARRAY_TASK_ID}/)"
+CHAN_IMGS="chan_imgs"
+echo ">>> Copying from local disk (${TMP_IMAGE_DIR}) to NAS (${OUTDIR}/${CHAN_IMGS}/${SLURM_ARRAY_TASK_ID}/)"
 mkdir -p $OUTDIR/chan_imgs/$SLURM_ARRAY_TASK_ID/
-cp -r $TMP_IMAGE_DIR $OUTDIR/chan_imgs/$SLURM_ARRAY_TASK_ID/
+cp -r $TMP_IMAGE_DIR $OUTDIR/$CHAN_IMGS/$SLURM_ARRAY_TASK_ID/
 # CLEAN UP SCRATCH DISK
 
 echo "Finishing time:"
