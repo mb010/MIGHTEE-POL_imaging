@@ -192,7 +192,6 @@ def main():
         parameters["spw"] = "*:{start_freq}~{end_freq}Hz".format(
             start_freq=int(start_freq), end_freq=int(end_freq)
         )
-        print(f""">>> parameters['spw']: {parameters['spw']}""")
 
     # For details see: https://casa.nrao.edu/docs/taskref/tclean-task.html
     # Using CLI to generate appropriate parameters
