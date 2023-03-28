@@ -227,8 +227,8 @@ def main():
         stokes = ["I"]
     else:
         if parameters["specmode"] == "cube":
-            stokes = ["IQUV"]
-            # stokes = ["I", "Q", "U", "V"]
+            # stokes = ["IQUV"]
+            stokes = ["I", "Q", "U", "V"]
             # nchan = []
             # start = []
         else:
