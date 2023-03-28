@@ -3,17 +3,9 @@ import shutil
 import argparse
 import logging
 from time import gmtime
-import casampi
 
 from casatasks import tclean
 from casatools import msmetadata
-
-from mpi4casa.MPICommandClient import MPICommandClient
-
-client = MPICommandClient()
-client.set_log_mode("redirect")
-client.start_services()
-ret = client.push_command_request(command, block, target_server, parameters)
 
 msmd = msmetadata()
 
@@ -173,7 +165,7 @@ def main():
         "uvrange": ">0.25klambda",
         "phasecenter": "",
         "reffreq": "",
-        "niter": 1,  # will be 60000
+        "niter": 60000,
         "parallel": True,
     }
     LOCAL_NAS = "/state/partition1/"
