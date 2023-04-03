@@ -16,7 +16,7 @@ export VIS="$1"
 export CONTAINER=/share/nas2/mbowles/casa-6_v2.simg
 export CHANNEL_WIDTH=2.5078
 export TMP_DIR=/state/partition1/tmp_bowles
-export IO_LOCK_FILE=/share/nas2/mbowles/nas2.lock
+export IO_LOCK_FILE=/share/nas2/mbowles/nas2_5.lock
 
 export OUTDIR="/share/nas2_5/MIGHTEE/images/$(basename ${VIS%.*ms})"
 mkdir -p $OUTDIR

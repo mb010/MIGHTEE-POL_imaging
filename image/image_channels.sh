@@ -47,7 +47,7 @@ pwd
 
 echo ">>> Splitting out Channel ${SLURM_ARRAY_TASK_ID}. Running on ${SLURM_JOB_NODELIST} <<<"
 time singularity exec --bind /share,/state/partition1 $CONTAINER \
-  python /share/nas2_5/mbowles/MIGHTEE-POL_imaging/split/split.py \
+  python /share/nas2_5/MIGHTEE/MIGHTEE-POL_imaging/split/split.py \
     --vis="$VIS" \
     --channelwidth=$CHANNEL_WIDTH \
     --outdir=$TMP_OUTDIR \
@@ -63,7 +63,7 @@ ROBUST="$1"
 echo ">>> Imaging Call of a Channel ${SLURM_ARRAY_TASK_ID} robust ${ROBUST}. Running on ${SLURM_JOB_NODELIST} <<<"
 # mpirun --mca oob tcp singularity exec --bind /share,/state/partition1 $CONTAINER \
 mpirun --mca oob tcp singularity exec --bind /share,/state/partition1 $CONTAINER \
-    python /share/nas2_5/mbowles/MIGHTEE-POL_imaging/image/image_channels.py \
+    python /share/nas2_5/MIGHTEE/MIGHTEE-POL_imaging/image/image_channels.py \
       --polarisation \
       --robust=$ROBUST \
       --vis=$SPLIT_VIS \
