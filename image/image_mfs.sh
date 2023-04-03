@@ -57,7 +57,7 @@ rm $IO_LOCK_FILE
 echo ">>> MFS Imaging Call. CPUS==${OMP_NUM_THREADS} on ${SLURM_JOB_NODELIST}<<<"
 echo ">>> Running on VIS=${VIS_TMP} with robust ${ROBUST}"
 time singularity exec --bind /share,/state/partition1 $CONTAINER \
-  mpirun --mca oob tcp python /share/nas2_5/MIGHTEE/MIGHTEE-POL_imaging/image/image_mfs.py \
+  mpirun --mca oob tcp python ${SCRIPT_DIR}/image/image_mfs.py \
       --polarisation \
       --robust=$ROBUST \
       --vis=$VIS_TMP \
