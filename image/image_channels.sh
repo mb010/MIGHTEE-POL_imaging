@@ -4,10 +4,10 @@
 #SBATCH --mail-user=micah.bowles@postgrad.manchester.ac.uk
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
-#SBATCH --cpus-per-task=24
-#SBATCH --mem=60G
+#SBATCH --cpus-per-task=17
+#SBATCH --mem=30G
 #SBATCH --job-name=MPIImgChan
-#SBATCH --time=5-00:00:00
+#SBATCH --time=7-00:00:00
 #SBATCH --array=6-10
 #SBATCH --output=logs/%A_%a.%x.out
 #SBATCH --error=logs/%A_%a.%x.err
@@ -62,7 +62,7 @@ mkdir -p $TMP_IMAGE_DIR
 ROBUST="$1"
 echo ">>> Imaging Call of a Channel ${SLURM_ARRAY_TASK_ID} robust ${ROBUST}. Running on ${SLURM_JOB_NODELIST} <<<"
 # mpirun --mca oob tcp singularity exec --bind /share,/state/partition1 $CONTAINER \
-mpirun --mca oob tcp singularity exec --bind /share,/state/partition1 $CONTAINER \
+time singularity exec --bind /share,/state/partition1 $CONTAINER \
     python ${SCRIPT_DIR}/image/image_channels.py \
       --polarisation \
       --robust=$ROBUST \
