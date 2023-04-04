@@ -33,7 +33,7 @@ date +'%Y-%m-%d %H:%M:%S'
 
 echo ">>> Starting Merge <<<"
 time singularity exec --bind /share,/state/partition1 $CONTAINER \
-  python ./split/merge_spw.py \
+  python ${SCRIPT_DIR}/split/merge_spw.py \
       --vis=$VIS \
       --outdir=$OUTDIR
 echo ">>> Merge completed <<<"

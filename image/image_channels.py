@@ -7,13 +7,6 @@ from time import gmtime
 from casatasks import tclean
 from casatools import msmetadata
 
-# import casampi
-# from mpi4casa.MPICommandClient import MPICommandClient
-# client = MPICommandClient()
-# client.set_log_mode('redirect')
-# client.start_services()
-# ret = client.push_command_request(command,block,target_server,parameters)
-
 msmd = msmetadata()
 
 logging.Formatter.converter = gmtime
@@ -173,7 +166,7 @@ def main():
         "phasecenter": "",
         "reffreq": "",
         "niter": 60000,
-        "parallel": False,
+        "parallel": True,
     }
     LOCAL_NAS = "/state/partition1/"
     TMP_DIR = "tmp_bowles"
@@ -191,7 +184,6 @@ def main():
         parameters["spw"] = "*:{start_freq}~{end_freq}Hz".format(
             start_freq=int(start_freq), end_freq=int(end_freq)
         )
-        print(f">>> parameters['spw']: {parameters['spw']}")
 
     # For details see: https://casa.nrao.edu/docs/taskref/tclean-task.html
     # Using CLI to generate appropriate parameters
@@ -235,8 +227,8 @@ def main():
         stokes = ["I"]
     else:
         if parameters["specmode"] == "cube":
-            stokes = ["IQUV"]
-            # stokes = ["I", "Q", "U", "V"]
+            # stokes = ["IQUV"]
+            stokes = ["I", "Q", "U", "V"]
             # nchan = []
             # start = []
         else:
