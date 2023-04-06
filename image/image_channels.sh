@@ -28,17 +28,10 @@ DATE_START=`date +%s`
 
 MS_NAME=$(basename $VIS)
 
-# TEMPORARILY REMOVE ALL FILES IN TMP_DIR
-rm -rf $TMP_DIR
-
 # SPLIT DATA ONTO LOCAL SCRATCH DISK
 TMP_OUTDIR="${TMP_DIR}/${SLURM_ARRAY_JOB_ID}_${SLURM_ARRAY_TASK_ID}"
 echo ">>> ls -lht TMP_OUTDIR ($TMP_OUTDIR)"
 ls -lht $TMP_OUTDIR
-# echo ">>> du -sh TMP_OUTDIR ($TMP_OUTDIR)"
-# du -sh ${TMP_OUTDIR}/*
-echo ">>> rm -r TMP_OUTDIR ($TMP_OUTDIR)"
-rm -r $TMP_OUTDIR
 echo ">>> mkdir -p TMP_OUTDIR ($TMP_OUTDIR)"
 mkdir -p $TMP_OUTDIR
 pwd
@@ -74,7 +67,10 @@ CHAN_IMGS="chan_imgs"
 echo ">>> Copying from local disk (${TMP_IMAGE_DIR}) to NAS (${OUTDIR}/${CHAN_IMGS}/${SLURM_ARRAY_TASK_ID}/)"
 mkdir -p $OUTDIR/chan_imgs/$SLURM_ARRAY_TASK_ID/
 cp -r $TMP_IMAGE_DIR $OUTDIR/$CHAN_IMGS/$SLURM_ARRAY_TASK_ID/
+
 # CLEAN UP SCRATCH DISK
+echo ">>> rm -r TMP_OUTDIR ($TMP_OUTDIR)"
+rm -r $TMP_OUTDIR
 
 echo "Finishing time:"
 date +'%Y-%m-%d %H:%M:%S'
