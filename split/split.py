@@ -113,8 +113,8 @@ class Split:
         else:
             counter = 0
         while self.start_freq <= self.freq_range[1]:
-            self.start_freq = self.start_freq + (counter-1)*self.chan_width
-            self.stop_freq  = self.start_freq + (counter+2)*self.chan_width
+            self.start_freq = self.start_freq + (counter - 1) * self.chan_width
+            self.stop_freq = self.start_freq + self.chan_width
             self.spw = f"*:{int(self.start_freq)}~{int(self.stop_freq)}Hz"  ### use self.index to calculate
             print(f">>> self.spw: {self.spw}")
             # Decided on filename formatting. Index should be easier with slurm jobs
