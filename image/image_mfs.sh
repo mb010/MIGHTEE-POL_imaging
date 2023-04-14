@@ -61,7 +61,7 @@ time singularity exec --bind /share,/state/partition1 $CONTAINER \
       --polarisation \
       --robust=$ROBUST \
       --vis=$VIS_TMP \
-      --outpath=$TMP_IMAGE_DIR
+      --outpath=${TMP_IMAGE_DIR}/
 
 # Copying data back to NAS for storage
 echo ">>> Copying from local disk (${TMP_OUTDIR}) to NAS (${OUTDIR}/mfs_${ROBUST}/)"
