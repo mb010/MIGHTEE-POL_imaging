@@ -10,7 +10,6 @@
 #SBATCH --job-name=ImgMFS
 #SBATCH --time=14-00:00:00
 #SBATCH --output=logs/%j.%x.out
-#SBATCH --error=logs/%j.%x.err
 
 export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
 module load openmpi-2.1.1
