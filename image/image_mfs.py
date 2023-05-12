@@ -4,7 +4,7 @@ import argparse
 import logging
 from time import gmtime
 
-from casatasks import tclean
+import casatasks
 from casatools import msmetadata
 
 msmd = msmetadata()
@@ -162,12 +162,14 @@ def main():
         "datacolumn": "data",
         "gridder": "wproject",
         "stokes": "IQUV",
-        "uvrange": ">0.25klambda",
+        "uvrange": ">0.3klambda",
+        "spw": "*:886~1380MHz",
         "phasecenter": "",
         "reffreq": "",
         "niter": 100000,
         "parallel": False,
     }
+    SMOOTHED_PSF_SIZE = "18arcsec"
     LOCAL = "/state/partition1/"
     TMP_DIR = "tmp_bowles"
 
@@ -228,8 +230,8 @@ def main():
         stokes = ["I"]
     else:
         if parameters["specmode"] == "cube":
-            stokes = ["IQUV"]
-            # stokes = ["I", "Q", "U", "V"]
+            # stokes = ["IQUV"]
+            stokes = ["I", "Q", "U", "V"]
             # nchan = []
             # start = []
         else:
@@ -296,7 +298,32 @@ def main():
                 image_name=parameters["imagename"]
             )
         )
-        tclean(**parameters)
+        casatasks.tclean(**parameters)
+
+        logger.info(
+            """>>> Starting smooth: {image_name}""".format(
+                image_name=parameters["imagename"]
+            )
+        )
+        # Smooth image to 18arcsec (lowest resolution of MeerKAT when missing antennas are included)
+        casatasks.imsmooth(
+            imagename=parameters["imagename"],
+            outfile=parameters["imagename"] + ".smoothed",
+            targetres=True,
+            kernel="gauss",
+            major=SMOOTHED_PSF_SIZE,
+            minor=SMOOTHED_PSF_SIZE,
+            pa="0deg",
+            overwrite=False,
+        )
+        outFits = parameters["imagename"] + ".fits"
+        outSmoothedFits = outSmoothedFits + ".fits"
+        casatasks.exportfits(
+            imagename=outSmoothedName, fitsimage=outFits, overwrite=True
+        )
+        casatasks.exportfits(
+            imagename=outSmoothedName, fitsimage=outSmoothedFits, overwrite=True
+        )
 
     # Remove temporary folder
     if args.copy:
