@@ -4,7 +4,7 @@ import argparse
 import logging
 from time import gmtime
 
-from casatasks import tclean
+import casatasks
 from casatools import msmetadata
 
 msmd = msmetadata()

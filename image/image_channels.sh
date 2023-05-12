@@ -4,14 +4,13 @@
 #SBATCH --mail-user=micah.bowles@postgrad.manchester.ac.uk
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
-#SBATCH --cpus-per-task=17
+#SBATCH --cpus-per-task=1
 #SBATCH --mem=30G
 #SBATCH --job-name=MPIImgChan
 #SBATCH --time=7-00:00:00
-#SBATCH --array=0-221
+#SBATCH --array=1-317
 #SBATCH --output=logs/%A_%a.%x.out
-#SBATCH --error=logs/%A_%a.%x.err
-#SBATCH --exclude=compute-0-1,compute-0-2,compute-0-30, compute-0-49
+#SBATCH --exclude=compute-0-1,compute-0-2,compute-0-30,compute-0-49
 
 sleep ${SLURM_ARRAY_TASK_ID}s
 
