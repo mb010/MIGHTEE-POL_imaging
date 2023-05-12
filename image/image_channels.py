@@ -295,7 +295,33 @@ def main():
                 image_name=parameters["imagename"]
             )
         )
-        tclean(**parameters)
+        casatasks.tclean(**parameters)
+
+        logger.info(
+            """>>> Starting smooth: {image_name}""".format(
+                image_name=parameters["imagename"]
+            )
+        )
+        # Smooth image to 18arcsec (lowest resolution of MeerKAT when missing antennas are included)
+        outSmoothedName = parameters["imagename"] + "_smoothed"
+        casatasks.imsmooth(
+            imagename=parameters["imagename"],
+            outfile=outSmoothedName,
+            targetres=True,
+            kernel="gauss",
+            major=SMOOTHED_PSF_SIZE,
+            minor=SMOOTHED_PSF_SIZE,
+            pa="0deg",
+            overwrite=False,
+        )
+        outFits = parameters["imagename"] + ".fits"
+        outSmoothedFits = outSmoothedFits + ".fits"
+        casatasks.exportfits(
+            imagename=outSmoothedName, fitsimage=outFits, overwrite=True
+        )
+        casatasks.exportfits(
+            imagename=outSmoothedName, fitsimage=outSmoothedFits, overwrite=True
+        )
 
     # Remove temporary folder
     if args.copy:
