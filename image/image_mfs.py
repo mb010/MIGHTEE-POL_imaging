@@ -314,7 +314,7 @@ def main():
             major=SMOOTHED_PSF_SIZE,
             minor=SMOOTHED_PSF_SIZE,
             pa="0deg",
-            overwrite=False,
+            overwrite=True,
         )
         outFits = parameters["imagename"] + ".fits"
         outSmoothedFits = outSmoothedFits + ".fits"
