@@ -155,26 +155,26 @@ def main():
     args = parse_args()
     # --------------------------- edit these parameters -------------------------
     parameters = {
-        "threshold": 0.0001,
+        "threshold": "0.1mJy",
         "imsize": [6144, 6144],
         "cell": "1.5arcsec",
         "wprojplanes": 768,
         "datacolumn": "data",
         "gridder": "wproject",
         "stokes": "IQUV",
-        "uvrange": ">0.25klambda",
         "phasecenter": "",
         "reffreq": "",
         "niter": 60000,
         "parallel": False,
     }
+    SMOOTHED_PSF_SIZE = "18arcsec"
     LOCAL_NAS = "/state/partition1/"
     TMP_DIR = "tmp_bowles"
 
     # ------------------------------- running clean -----------------------------
     # Find correct SPW if specified:
     if args.index is not None:
-        freq_range = [880e6, 1680e6]  # MHz
+        freq_range = [886e6, 1680e6]  # Hz
         start_freq = (
             freq_range[0] + int(args.index) * float(args.channelwidth) * 10**6
         )
