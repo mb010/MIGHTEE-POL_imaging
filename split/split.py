@@ -119,7 +119,7 @@ class Split:
             print(f">>> self.spw: {self.spw}")
             # Decided on filename formatting. Index should be easier with slurm jobs
             # filename = f"{self.outdir}{self.filebase}.{self.spw}.ms"
-            filename = f"{self.outdir}/{self.filebase}_chan_{counter}.ms"
+            filename = f"{self.outdir}/{self.filebase}.chan{counter:03d}.ms"
 
             if ~os.path.isdir(filename) or self.force:
                 casatasks.split(
