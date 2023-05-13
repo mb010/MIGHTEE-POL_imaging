@@ -88,7 +88,7 @@ class Split:
         chan_width,
         force,
         outdir,
-        freq_range="880-1680",
+        freq_range="886-1680",
         index=None,
     ):
         # Read in parameters

@@ -45,7 +45,7 @@ time singularity exec --bind /share,/state/partition1 $CONTAINER \
     --outdir=$TMP_OUTDIR \
     --index=$SLURM_ARRAY_TASK_ID
 
-SPLIT_VIS=$(printf "${TMP_OUTDIR}/$(basename ${VIS%.*ms})_chan%03d.ms" $SLURM_ARRAY_TASK_ID)
+SPLIT_VIS=$(printf "${TMP_OUTDIR}/$(basename ${VIS%.*ms}).chan%03d.ms" $SLURM_ARRAY_TASK_ID)
 TMP_IMAGE_DIR="${TMP_OUTDIR}/images"
 echo ">>> Making image tmp image directory ${TMP_IMAGE_DIR} (TMP_IMAGE_DIR)."
 mkdir -p $TMP_IMAGE_DIR
