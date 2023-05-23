@@ -8,7 +8,7 @@
 #SBATCH --mem=30G
 #SBATCH --job-name=MPIImgChan
 #SBATCH --time=7-00:00:00
-#SBATCH --array=1-317
+#SBATCH --array=1-200
 #SBATCH --output=logs/%A_%a.%x.out
 #SBATCH --exclude=compute-0-1,compute-0-2,compute-0-30,compute-0-49
 
